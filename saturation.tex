@@ -1,1 +1,5 @@
 \section{Initial Contact and the Problem of Saturation}
+
+Chaincode labs (\url{https://chaincode.com/}) is a private R\&D center based in Manhattan that exists solely to support and develop Bitcoin.  In March of 2021, Adam Jonas, the head of special projects at Chaincode, contacted the first author to discuss determining a strategy to improve the fuzzing of Bitcoin Core.  In particular, at the time, it seemed that the fuzzing was ``stuck'': neither code coverage nor found bugs were increasing with additional fuzzing time.  After some discussion, an 80 hour effort was determined as a reasonable scope for an external, research-oriented, look at the fuzzing effort.  Before that effort, conducted over the summer of 2021, began, the problem of saturation resolved itself, but the issue that drove the initial desire for a researcher investigation is well worth examining.  Moreover, understanding why Bitcoin Core fuzzing was, temporarily but not fundamentally, saturated, may be useful to help other fuzzing campaigns avoid the same false saturation problem.
+
+\subsection{We Hold the World Ransom For... ONE MILLION FUZZER ITERATIONS}
