@@ -146,6 +146,75 @@ What about Preregistration?},
   year={2021},
   month={April}}
 
+
+@inproceedings{evalfuzz,
+author = {Klees, George and Ruef, Andrew and Cooper, Benji and Wei, Shiyi and Hicks, Michael},
+title = {Evaluating Fuzz Testing},
+year = {2018},
+isbn = {9781450356930},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3243734.3243804},
+doi = {10.1145/3243734.3243804},
+abstract = {Fuzz testing has enjoyed great success at discovering security critical bugs in real
+software. Recently, researchers have devoted significant effort to devising new fuzzing
+techniques, strategies, and algorithms. Such new ideas are primarily evaluated experimentally
+so an important question is: What experimental setup is needed to produce trustworthy
+results? We surveyed the recent research literature and assessed the experimental
+evaluations carried out by 32 fuzzing papers. We found problems in every evaluation
+we considered. We then performed our own extensive experimental evaluation using an
+existing fuzzer. Our results showed that the general problems we found in existing
+experimental evaluations can indeed translate to actual wrong or misleading assessments.
+We conclude with some guidelines that we hope will help improve experimental evaluations
+of fuzz testing algorithms, making reported results more robust.},
+booktitle = {Proceedings of the 2018 ACM SIGSAC Conference on Computer and Communications Security},
+pages = {2123–2138},
+numpages = {16},
+keywords = {security, evaluation, fuzzing},
+location = {Toronto, Canada},
+series = {CCS '18}
+}
+
+
+
+@inproceedings{testedness,
+author = {Ahmed, Iftekhar and Gopinath, Rahul and Brindescu, Caius and Groce, Alex and Jensen, Carlos},
+title = {Can Testedness Be Effectively Measured?},
+year = {2016},
+isbn = {9781450342186},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2950290.2950324},
+doi = {10.1145/2950290.2950324},
+abstract = { Among the major questions that a practicing tester faces are deciding where to focus
+additional testing effort, and deciding when to stop testing. Test the least-tested
+code, and stop when all code is well-tested, is a reasonable answer. Many measures
+of "testedness" have been proposed; unfortunately, we do not know whether these are
+truly effective. In this paper we propose a novel evaluation of two of the most important
+and widely-used measures of test suite quality. The first measure is statement coverage,
+the simplest and best-known code coverage measure. The second measure is mutation
+score, a supposedly more powerful, though expensive, measure. We evaluate these measures
+using the actual criteria of interest: if a program element is (by these measures)
+well tested at a given point in time, it should require fewer future bug-fixes than
+a "poorly tested" element. If not, then it seems likely that we are not effectively
+measuring testedness. Using a large number of open source Java programs from Github
+and Apache, we show that both statement coverage and mutation score have only a weak
+negative correlation with bug-fixes. Despite the lack of strong correlation, there
+are statistically and practically significant differences between program elements
+for various binary criteria. Program elements (other than classes) covered by any
+test case see about half as many bug-fixes as those not covered, and a similar line
+can be drawn for mutation score thresholds. Our results have important implications
+for both software engineering practice and research evaluation. },
+booktitle = {Proceedings of the 2016 24th ACM SIGSOFT International Symposium on Foundations of Software Engineering},
+pages = {547–558},
+numpages = {12},
+keywords = {coverage criteria, statistical analysis, mutation testing, test suite evaluation},
+location = {Seattle, WA, USA},
+series = {FSE 2016}
+}
+
+
+
 @article{HolmesLOC,
 author = {Holmes, Josie and Ahmed, Iftekhar and Brindescu, Caius and Gopinath, Rahul and Zhang, He and Groce, Alex},
 title = {Using Relative Lines of Code to Guide Automated Test Generation for Python},
@@ -404,6 +473,35 @@ only assembled the material, and added some additional explanations where I foun
 it difficult to understand.}
 }
 
+@inproceedings{covdev,
+author = {Gopinath, Rahul and Jensen, Carlos and Groce, Alex},
+title = {Code Coverage for Suite Evaluation by Developers},
+year = {2014},
+isbn = {9781450327565},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2568225.2568278},
+doi = {10.1145/2568225.2568278},
+abstract = { One of the key challenges of developers testing code is determining a test suite's
+quality -- its ability to find faults. The most common approach is to use code coverage
+as a measure for test suite quality, and diminishing returns in coverage or high absolute
+coverage as a stopping rule. In testing research, suite quality is often evaluated
+by a suite's ability to kill mutants (artificially seeded potential faults). Determining
+which criteria best predict mutation kills is critical to practical estimation of
+test suite quality. Previous work has only used small sets of programs, and usually
+compares multiple suites for a single program. Practitioners, however, seldom compare
+suites --- they evaluate one suite. Using suites (both manual and automatically generated)
+from a large set of real-world open-source projects shows that evaluation results
+differ from those for suite-comparison: statement (not block, branch, or path) coverage
+predicts mutation kills best. },
+booktitle = {Proceedings of the 36th International Conference on Software Engineering},
+pages = {72–82},
+numpages = {11},
+keywords = {test frameworks, evaluation of coverage criteria, statistical analysis},
+location = {Hyderabad, India},
+series = {ICSE 2014}
+}
+
 
 
 @inproceedings{10.1145/1294211.1294256,
@@ -501,6 +599,81 @@ pages = "19--28",
  series = {CCS '16},
  year = {2016},
 } 
+@inproceedings{AFLplusplus-Woot20,
+	author = {Andrea Fioraldi and Dominik Maier and Heiko Ei{\ss}feldt and Marc Heuse},
+	title = {AFL++ : Combining Incremental Steps of Fuzzing Research},
+	booktitle = {14th {USENIX} Workshop on Offensive Technologies ({WOOT} 20)},
+	year = {2020},
+	url = {https://www.usenix.org/conference/woot20/presentation/fioraldi},
+	publisher = {{USENIX} Association},
+	month = aug,
+}
+
+@inproceedings{QASan-SecDev20,
+  author={Fioraldi, Andrea and D’Elia, Daniele Cono and Querzoni, Leonardo},
+  booktitle={2020 IEEE Secure Development Conference (SecDev)}, 
+  title={Fuzzing Binaries for Memory Safety Errors with {QASan}}, 
+  year={2020}
+}
+
+@inproceedings{BaseSAFE-WiSec20,
+  author = {Maier, Dominik and Seidel, Lukas and Park, Shinjo},
+  title = {BaseSAFE: Baseband Sanitized Fuzzing through Emulation},
+  year = {2020},
+  isbn = {9781450380065},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3395351.3399360},
+  doi = {10.1145/3395351.3399360},
+  booktitle = {Proceedings of the 13th ACM Conference on Security and Privacy in Wireless and Mobile Networks},
+  pages = {122--132},
+  numpages = {11},
+  keywords = {rehosting, cellular, fuzzing, security},
+  location = {Linz, Austria},
+  series = {WiSec '20}
+}
+
+@inproceedings{FuzzingSymbolicExpressions-ICSE21,
+  author={Borzacchiello, Luca and Coppa, Emilio and Demetrescu, Camil},
+  booktitle={2021 IEEE/ACM 43rd International Conference on Software Engineering (ICSE)},
+  title={Fuzzing Symbolic Expressions},
+  year={2021},
+  volume={},
+  number={},
+  pages={711-722},
+  doi={10.1109/ICSE43902.2021.00071}
+}
+
+@inproceedings{PMFuzz-ASPLOS21,
+  title={PMFuzz: Test Case Generation for Persistent Memory Programs},
+  author={Liu, Sihang and Mahar, Suyash and Ray, Baishakhi and Khan, Samira},
+  booktitle={Proceedings of the Twenty-sixth International Conference on Architectural Support for Programming Languages and Operating Systems},
+  year={2021}
+}
+
+@inproceedings {InvsCov-USENIX21,
+  author = {Andrea Fioraldi and Daniele Cono D'Elia and Davide Balzarotti},
+  title = {The Use of Likely Invariants as Feedback for Fuzzers},
+  booktitle = {30th {USENIX} Security Symposium ({USENIX} Security 21)},
+  year = {2021},
+  url = {https://www.usenix.org/conference/usenixsecurity21/presentation/fioraldi},
+  publisher = {{USENIX} Association},
+  month = aug,
+}
+
+@inproceedings{Gramatron-ISSTA21,
+  author = {Srivastava, Prashast and Payer, Mathias},
+  title = {Gramatron: Effective Grammar-Aware Fuzzing},
+  year = {2021},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {http://nebelwelt.net/files/21ISSTA.pdf},
+  doi = {10.1145/3460319.3464814},
+  booktitle = {Proceedings of the 30th ACM SIGSOFT International Symposium on Software Testing and Analysis},
+  keywords = {Fuzzing, grammar-aware, dynamic software analysis},
+  location = {Virtual, Denmark},
+  series = {ISSTA 2021}
+}
 
 @inproceedings{goodman2018deepstate,
   title={{DeepState}: Symbolic unit testing for {C} and {C++}},

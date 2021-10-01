@@ -1,3 +1,15 @@
 \section{Adding Fuzzer Diversity: Using Eclipser and Trying Ensemble Fuzzing}
 
-Eclipser~\cite{eclipser} is a fuzzer that combines afl-like\footnote{In fact, the latest version of Eclipser simply uses afl for non concolic fuzzing.} coverage-driven mutation-based fuzzing with a scalable form of grey-box concolic testing.
+The most obvious solution when fuzzer A faces saturation on a target codebase is to bring in fuzzer B.  In fact, the original blog post that attracted Chaincode's attention mentions this in the very definition of saturation:  ``Subsequently, a different fuzzer, applied to the same system, finds a lot of bugs.''  Of course, this is the easy case, and there can also be saturation across the meta-fuzzer defined as a composition of all fuzzers applied!  Still, ``throw in another fuzzer'' is almost always a good idea when performing serious fuzzing campaigns.  If that fuzzer adds some elements that are not present in any of the previously applied fuzzers, so much the bettter.
+
+\subsection{Fuzzing with Eclipser}
+
+\begin{sloppypar}
+Eclipser~\cite{eclipser} is a fuzzer that combines afl-like\footnote{In fact, the latest version of Eclipser simply uses afl for non concolic fuzzing.} coverage-driven mutation-based fuzzing with a scalable form of grey-box concolic testing.  AFL++~\cite{AFLplusplus-Woot20} and libFuzzer \url{https://llvm.org/docs/LibFuzzer.html}, the two fuzzers most aggressively applied to the Bitcoin Core code, do not perform any kind of symbolic or concolic testing.  Eclipser is fairly easy to apply to new systems, since it uses QEMU to run on an ordinary binary, so the first order of business was to see if it could find new bugs or at least cover code AFL++ and libFuzzer were not able to reach.
+
+Either directly (from runs using Eclipser itself) or indirectly (performing long AFL or libFuzzer runs seeded with Eclipser-generated tests), Eclipser produced thousands of new corpus seed files that were accepted as PRs to merge into the Bitcoin Core QA assets repo \url{https://github.com/bitcoin-core/qa-assets}.  The first author is now the third-largest contributor to the QA assets repo, in fact.  These files added hundreds of new coverage edges to the basis for OSS-Fuzz and other testing of Bitcoin Core.
+
+On the other hand, these files added \emph{no} new covered statements; the additions were all edges, not exploration of completely un-covered code, the most promising form of new coverage~\cite{covdev,testedness}.  Nor did these tests expose any new bugs.  Of course, in the long run testing in OSS-Fuzz or on the QA team's servers may use these tests to help cover new code or find new bugs, but the immediate impact is more modest.
+
+  One of the outcomes of the 80 hour effort was full documentation of how to run Eclipser v1.x on the Bitcoin Core code:  \url{https://github.com/bitcoin/bitcoin/blob/master/doc/fuzzing.md#fuzzing-bitcoin-core-using-eclipser-v1x}.
+  \end{sloppypar}
