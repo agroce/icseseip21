@@ -1,3 +1,23 @@
 \section{Trying Swarm Fuzzing}
 
-DeepState~\cite{goodman2018deepstate} provides strong support for swarm fuzzing.  However, while there are similarities to the bitcoin core developed infrastucture for fuzz targets and the DeepState API, re-writing the fuzz targets to use DeepState is too large an effort for the likely payoff at this time, even though DeepState would also provide additional fuzzer diversity.
+Swarm testing~\cite{ISSTA12} is a method for improving test
+generation that relies on identifying \emph{features}~\cite{groce2013help} of tests, and
+disabling some of the features in each test.  For instance, if features are
+API calls, and we are testing a stack with {\tt push}, {\tt pop}, {\tt
+  top}, and {\tt clear} calls, a non-swarm random test of any
+significant length will contain multiple calls to \emph{all} of
+the functions.  In swarm testing, however, for each test \emph{some of the calls
+(with probability usually equal to 0.5 for each call) will be
+disabled}, but \emph{different calls will be disable for each generated
+test}.  This produces less variance between calls \emph{within tests}, but
+much more variance \emph{between tests}.  Practically, in the stack
+example, it will enable the size of the stack to grow much larger than
+it ever would have any chance of doing in non-swarm testing, due to
+some tests omitting {\tt pop} and/or {\tt clear} calls.  Swarm testing
+is widely used in compiler testing
+\cite{le2014compiler} and is a core element of the
+testing for FoundationDB \cite{zhou2021foundationdb}.
+
+Some Bitcoin Core fuzz harnesses resemble API-sequence generation.  In particular, the {\tt process\_messages} produces method sequences of a fixed length, where each message is of a particular type (there are a modest number of message types, again similar to an API-call ``fuzz surface'').  Swarm testing is an obvious candidate approach for enhancing this important fuzz harness.
+
+DeepState~\cite{goodman2018deepstate} provides strong support for swarm fuzzing.  However, as with ensemble fuzzing, while there are similarities to the bitcoin core developed infrastucture for fuzz targets and the DeepState API, re-writing the fuzz targets to use DeepState seemed like too large a time investment for the likely payoff without first trying a less ambitious approach.
