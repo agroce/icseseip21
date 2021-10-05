@@ -12,4 +12,24 @@ mutate the code.
 \caption{The Gaping Maw of Cthulhu}
 \end{figure*}
 
+\begin{figure*}
+\vspace{2mm}
+\input{tables/mutation-score-comparison}
+\caption{Comparison of Coverage and Mutation Score Across Projects}
+\label{fig:comparison}
+\end{figure*}
+
 \subsection{Comparison with Other Cryptocurrency Codebases}
+
+We use universal mutator to compare Bitcoin's testing quality with other popular cryptocurrencies. Transaction validation logic was targeted
+due to this logic being very critical and having a high likelihood to cause high severity issues in the case a bug was caught. To select
+our corpus, we examined the top 10 cryptocurrencies by market cap. We eliminate stable cryptocurrencies, such as USD coin,
+because they do not have transaction validation logic analagous to bitcoin. For each project, we also run coverage collection
+tools in order to compare code coverage. If a project does not build or have coverage, we also exclude it from our comparison.
+
+In the end, the following projects failed to compile: Binance Coin, Polkadot, Chainlink and the following projects did not have
+readily accessable coverage reports: stellar.
+
+In deciding what files to mutate, we select the core transaction validation logic, by filtering for files
+with tx, transaction, verify, and validate. Following this, we manually inspected each matching file and select
+ones that directly relate to transaction validation. The results for these experiments are displayed in figure \ref{fig:comparison}.
