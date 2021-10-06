@@ -1,5 +1,93 @@
 \section{Mutation Analysis}
 
+Attempting to improve a fuzzing effort is one way to find problems
+with the effort; if you succeed, you found a weakness.  However, none
+of the attempts exposed a serious problem.  Adding more fuzzers would
+be \emph{good}, but waas not obviously \emph{essential}.  Ensemble
+fuzzing was not feasible, and swarm testing was, for practical
+purposes, already performed by alternative means.  An alternative is
+to directly look for holes in testing.  The Bitcoin Core fuzzing team
+clearly was measuring and inspecting code coverage, so little value
+would be added by inspecting mere coverage.  Mutation
+testing/analysis~\cite{MutationSurvey}, however, subsumes code coverage and adds extremely
+valuable information on \emph{oracle power} in addition to mere
+coverage~\cite{Discontents}.  This is perhaps especially valuable in fuzzing, where ``you
+only see crashes'' is a persistent concern.
+
+\begin{sloppypar}
+We used the universal mutator
+(\url{https://github.com/agroce/universalmutator})~\cite{regexpMut} to
+mutate the Bitcoin Core {\tt tx\_verify.cpp} code.  Transaction
+verification is a well-covered
+(\url{https://marcofalke.github.io/btc_cov/fuzz.coverage/src/consensus/index.html})
+file, and obviously an extremely critical functionality for the
+blockchain.  Figure~\ref{kills} shows an overview of the mutation
+analysis of the file.
+
+\begin{figure}
+\vspace{2mm}
+\includegraphics[width=0.9\columnwidth]{kill_pre_valgrind.png}
+\caption{Mutation Kills for {\tt tx\_verify.cpp}}
+\label{kills}
+\end{figure}
+
+The universal mutator generated 430 compiling mutants of the file.
+Two fuzz targets performed interesting testing of the {\tt tx\_verify.cpp} code:
+{\tt process\_message\_tx} and {\tt coins\_view}.  The code was also
+tested by {\tt process\_message} and {\tt process\_messages} but the
+relevant corpus entries were duplicated in {\tt process\_message\_tx}
+(we verified these provided no additional mutant kills).  The fuzzing
+applied was limited to five minutes of libFuzzer exploration based no
+the full (and large) QA asset corpus for each harness, with all
+sanitizers enabled.  The {\tt
+  process\_message\_tx} target was able to detect 24 mutants, and the
+{\tt coins\_view} harness was able to detect 32 mutants, for a total
+of 50 mutants, not quite 12\% of all the generated mutants.  This is
+not a bad result: fuzzing inherently has trouble detecting subtle,
+non-crash-inducing, bugs in code, because writing a strong specification of
+correct behavior that covers all the bizarre and pointless inputs
+produced in fuzzing is often impractical, or would require a
+specification nearly as complex as the code itself.  This is one
+reason \emph{differential} fuzzing is promising: a reference
+implementation is such a specification.  Bitcoin Core's cryptographic
+elements are, in fact, differentially fuzzed
+\url{https://github.com/bitcoin/bitcoin/pull/22704#issuecomment-898989809}.
+\end{sloppypar}
+
+
+A major purpose of fuzzing is, then, to address limits in more
+traditional functional testing, where known inputs are paired with
+expected behavior.  While functional or unit testing is very powerful,
+the kinds of bugs found in vulnerabilities often involve the kind of
+inputs that don't appear in ``normal'' unit/functional tests, as shown
+by the success of fuzzing and security audits~\cite{FC20}.  The real
+question, then, is how many mutants that survive Bitcoin Core's
+extensive functional tests survive fuzzing.
+
+The answer is: not too many.  The functional tests without sanitizers
+enabled catch an additional 278 mutants.  Turning on sanitizers (which
+is very expensive --- we \emph{only} ran it for mutants surviving all other
+tests, as indicated by the zero overlap and the asterisk in Figure~\ref{kills}) catches an additional 12 mutants.  Only 90 of the
+430 compiling mutants survive all tests, for an overall mutation score
+of 79.07\%.  On the other hand, fuzzing only adds two mutant kills to
+the functional testing.
+
+Moreover, manual inspection of the surviving mutants showed that at
+least 29 of these were clearly semantically equivalent to the
+un-mutated code.  For instance, many mutants removed or weakened an
+assertion; clearly this cannot ever be detected, since it can only
+transform failing tests into passing tests.  The full, detailed list
+of surviving mutants, prioritized by an FPF ranking~\cite{10.1145/2491956.2462173,Gonzalez85}, is
+available here:
+\url{https://github.com/agroce/bitcorpus/blob/master/mutation/prioritized_full_inspect.txt}.
+Discussion with the Bitcoin Core team is ongoing as we write
+(\url{https://github.com/bitcoin/bitcoin/issues/22690}), but thus far
+none of the surviving mutants seem to expose serious testing
+problems.  After manual pruning, the mutation score is 85.8\%, and
+some of the remaining 61 mutants are likely also equivalent.
+
+\subsection{Comparison with Other Cryptocurrency Codebases}
+
 \begin{table*}[ht!]
 \vspace{2mm}
 \input{tables/mutation-score-comparison}
@@ -11,22 +99,9 @@
 \label{tab:comparison}
 \end{table*}
 
-\begin{sloppypar}
-We used the universal mutator
-(\url{https://github.com/agroce/universalmutator})~\cite{regexpMut} to
-mutate the code.
-\end{sloppypar}
-
-\begin{figure*}
-\vspace{2mm}
-\includegraphics[width=1.9\columnwidth]{kill_pre_valgrind.png}
-\caption{The Gaping Maw of Cthulhu}
-\end{figure*}
-
-\subsection{Comparison with Other Cryptocurrency Codebases}
-
-We use universal mutator to compare Bitcoin's testing quality with other popular cryptocurrencies. Transaction validation logic was targeted
-due to this logic being very critical and having a high likelihood to cause high severity issues in the case a bug was caught. To select
+We also use mutation to (very loosely) compare Bitcoin Core's testing
+with that for other popular cryptocurrencies. Again, we targeted
+transaction validation logic, for the same reasons as given above. To select
 our corpus, we examined the top 10 cryptocurrencies by market cap. We eliminate stable cryptocurrencies, such as USD coin,
 because they do not have transaction validation logic analagous to bitcoin. For each project, we also run coverage collection
 tools in order to compare code coverage. If a project does not build or have coverage, we also exclude it from our comparison.
