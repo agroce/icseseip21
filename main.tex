@@ -5,17 +5,17 @@
 %% The original source files were:
 %%
 %% samples.dtx  (with options: `sigconf')
-%% 
+%%
 %% IMPORTANT NOTICE:
-%% 
+%%
 %% For the copyright see the source file.
-%% 
+%%
 %% Any modified versions of this file must be renamed
 %% with new filenames distinct from sample-sigconf.tex.
-%% 
+%%
 %% For distribution of the original source see the terms
 %% for copying and modification in the file samples.dtx.
-%% 
+%%
 %% This generated file may be distributed as long as the
 %% original source files, as listed above, are part of the
 %% same distribution. (The sources need not necessarily be
@@ -27,6 +27,8 @@
 \usepackage{code}
 \usepackage{graphicx}
 \usepackage{balance}
+\usepackage{multirow}
+\usepackage{multicol}
 
 %%% The following is specific to Onward! '21 and the paper
 %%% 'Let a Thousand Flowers Bloom: On the Uses of Diversity in Software Testing'
@@ -88,6 +90,14 @@
 %% the author to define a more concise list
 %% of authors' names for this purpose.
 \renewcommand{\shortauthors}{us folks}
+
+%% Table shortcuts
+\newcommand{\mr}[2]{\multirow{#1}{*}{#2}}
+\newcommand{\mc}[3]{\multicolumn{#1}{#2}{#3}}
+
+%% comments
+\newcommand{\clg}[1]{\textcolor{blue}{#1}}
+\newcommand{\rvt}[1]{\textcolor{purple}{#1}}
 
 %%
 %% The abstract is a short summary of the work to be presented in the

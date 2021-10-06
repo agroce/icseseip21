@@ -1,5 +1,16 @@
 \section{Mutation Analysis}
 
+\begin{table*}[ht!]
+\vspace{2mm}
+\input{tables/mutation-score-comparison}
+\caption{Comparison of Coverage and Mutation Score Across Projects
+\\ \rvt{rvt asks: for the reader, what does mutation score represent? (feel free to explain inside this caption)
+\\ \rvt{rvt says: probably we only need the filename(s) and not the path for presentation--will save space and this table could fit into one col. small potatoes right now though.}
+\\ \rvt{rvt asks: Coverage here represents coverage of the file--I think it would be good to provide the average coverage per project too, to give an overall sense for the project. We should caveat in the discussion, what this number means, i.e., it is representative only of the subset of things we did to try determine coverage, and not necessarily an accurate signal of testing quality, because we might miss, e.g., integration test coverage or I don't know what. So this is more to satisfy a ``here's the data if you want to form a picture in your head of testing as per what we observed''}
+}}
+\label{tab:comparison}
+\end{table*}
+
 \begin{sloppypar}
 We used the universal mutator
 (\url{https://github.com/agroce/universalmutator})~\cite{regexpMut} to
@@ -10,13 +21,6 @@ mutate the code.
 \vspace{2mm}
 \includegraphics[width=1.9\columnwidth]{kill_pre_valgrind.png}
 \caption{The Gaping Maw of Cthulhu}
-\end{figure*}
-
-\begin{figure*}
-\vspace{2mm}
-\input{tables/mutation-score-comparison}
-\caption{Comparison of Coverage and Mutation Score Across Projects}
-\label{fig:comparison}
 \end{figure*}
 
 \subsection{Comparison with Other Cryptocurrency Codebases}
@@ -32,4 +36,4 @@ readily accessable coverage reports: Stellar.
 
 In deciding what files to mutate, we select the core transaction validation logic, by filtering for files
 with tx, transaction, verify, and validate. Following this, we manually inspected each matching file and select
-ones that directly relate to transaction validation. The results for these experiments are displayed in figure \ref{fig:comparison}.
+ones that directly relate to transaction validation. The results for these experiments are displayed in Table \ref{tab:comparison}.
