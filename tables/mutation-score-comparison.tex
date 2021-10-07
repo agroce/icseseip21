@@ -1,13 +1,16 @@
 \centering
-\begin{tabular}{llcc}
+\begin{tabular}{llccc}
 \toprule
-\bf \mr{2}{Project} & \bf \mr{2}{File Path} & \mc{1}{c}{\bf Mutation} & \bf \mr{2}{Coverage} \\
-\bf                 & \bf                   & \mc{1}{c}{\bf Score}    & \bf                  \\
+\bf \mr{2}{Project} & \bf \mr{2}{File Path} & \mc{1}{c}{\bf Mutation} & \mc{1}{c}{\bf File}  & \mc{1}{c}{\bf Project} \\
+\bf                 & \bf                   & \mc{1}{c}{\bf Score}    & \mc{1}{c}{\bf Coverage}               & \mc{1}{c}{\bf Coverage}  \\
 \midrule
-bitcoin & src/consensus/tx\_verify.cpp & 78.6\% & 98.7\% \\
-  go-ethereum & signer/fourbyte/validation.go & 49.5\% & 60.0\% \\
-  dogecoin & src/bitcoin-tx.cpp & 58.7\% & \\
-  avalanchego & vms/platformvm/add\_subnet\_validator\_tx.go & 57.3\% & 81.0\% \\
-  stellar & src/historywork/VerifyTxResultsWork.cpp & 85.1\% & \\
+bitcoin & src/consensus/tx\_verify.cpp & 78.6\% & 98.7\% & 84.2\% \\
+\multirow{2}{*}{go-ethereum} & core/block\_validator.go & 70.1\% & 81.0\% & 84.2\% \\
+ & signer/fourbyte/validation.go & 49.5\% & 60.0\% & 58.8\% \\
+  dogecoin & src/bitcoin-tx.cpp & 58.7\% & & 70.1\% \\
+  avalanchego & vms/platformvm/add\_subnet\_validator\_tx.go & 57.3\% & 81.0\% & 63.6\% \\
+  stellar & src/historywork/VerifyTxResultsWork.cpp & 85.1\% & & \\
+  go-algorand & ledger/eval.go & 99.8\% & 86.0\% & 52.2\% \\
+  cosmos-sdk & x/auth/ante/sigverify.go & 73.1\% & &  \\
 \bottomrule
 \end{tabular}
