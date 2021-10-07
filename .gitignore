@@ -2,3 +2,9 @@
 *.log
 *.pdf
 *.out
+
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
