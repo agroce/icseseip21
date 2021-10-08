@@ -9,6 +9,11 @@ bitcoin & src/consensus/tx\_verify.cpp & 210 & 78.6\% & 98.7\% & 84.2\% \\
 \mr{2}{go-ethereum} & core/block\_validator.go & 129 & 70.1\% & 81.0\% & 84.2\% \\
                     & signer/fourbyte/validation.go & 127 & 49.5\% & 60.0\% & 58.8\% \\
 \cmidrule{2-6}
+    \mr{3}{solana}   & perf/src/sigverify.rs & 1246 & ????\% & 74.48\% & \mr{3}{82.2\%} \\ 
+    % & core/src/sigverify\_stage.rs &  296 & ????\% & 88.46\% & \mr{3}{82.2\%} \\  this seems to just call perf/src/sigverify
+           & core/src/validator.rs & 2016 & -      & 73.29\% &        \\ % these are app.codecov.io/gh/solana-labs/solana @a6a4cfd numbers. grcov doesn't include tests, but reports coverage % as a total over lines including tests, so it's also not accurate. we'll just over approximate rather than underapproximate
+           & core/src/tvu.rs       &  494 & -      & 63.12\% &       \\ 
+\cmidrule{2-6}
   dogecoin & src/bitcoin-tx.cpp & 847 & 58.7\% & - & 70.1\% \\
 \cmidrule{2-6}
   avalanchego & vms/platformvm/add\_subnet\_validator\_tx.go & 308 & 57.3\% & 81.0\% & 63.6\% \\
