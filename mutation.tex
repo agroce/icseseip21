@@ -3,12 +3,12 @@
 Attempting to improve a fuzzing effort is one way to find problems
 with the effort; if you succeed, you found a weakness.  However, none
 of the attempts exposed a serious problem.  Adding more fuzzers would
-be \emph{good}, but waas not obviously \emph{essential}.  Ensemble
+be \emph{good}, but was not obviously \emph{essential}.  Ensemble
 fuzzing was not feasible, and swarm testing was, for practical
 purposes, already performed by alternative means.  An alternative is
 to directly look for holes in testing.  The Bitcoin Core fuzzing team
-clearly was measuring and inspecting code coverage, so little value
-would be added by inspecting mere coverage.  Mutation
+clearly was measuring and inspecting code coverage (see \url{https://marcofalke.github.io/btc_cov/}), so little value
+would be added by inspecting traditional coverage alone.  Mutation
 testing/analysis~\cite{MutationSurvey}, however, subsumes code coverage and adds extremely
 valuable information on \emph{oracle power} in addition to mere
 coverage~\cite{Discontents}.  This is perhaps especially valuable in fuzzing, where ``you
@@ -16,9 +16,11 @@ only see crashes'' is a persistent concern.
 
 \begin{sloppypar}
 We used the universal mutator
-(\url{https://github.com/agroce/universalmutator})~\cite{regexpMut} to
+(\url{https://github.com/agroce/universalmutator})~\cite{regexpMut}, a
+mutation tool already used widely in the blockchain and smart contract
+world, to
 mutate the Bitcoin Core {\tt tx\_verify.cpp} code.  Transaction
-verification is a well-covered
+verification is a fairly well-covered
 (\url{https://marcofalke.github.io/btc_cov/fuzz.coverage/src/consensus/index.html})
 file, and obviously an extremely critical functionality for the
 blockchain.  Figure~\ref{kills} shows an overview of the mutation
@@ -84,7 +86,39 @@ Discussion with the Bitcoin Core team is ongoing as we write
 (\url{https://github.com/bitcoin/bitcoin/issues/22690}), but thus far
 none of the surviving mutants seem to expose serious testing
 problems.  After manual pruning, the mutation score is 85.8\%, and
-some of the remaining 61 mutants are likely also equivalent.
+some of the remaining 61 mutants are likely also equivalent.  The
+limitations of the fuzzing oracle are clear: fuzzing covers 98\% of
+statements and72.6\% of branches as we write, but can kill fewer than
+12\% of mutants.  The much greater killing power of the functional
+tests obviously does not lie in the marginal 0.7 percentage points and 0.5
+percentage points of statement and branch coverage obtained; it lies
+in the ability to reject incorrect executions that do not crash or set
+off a sanitizer alarm.
+
+This raises the question:  why fuzz?  The coverage for high quality
+(if imperfect) functional tests such as those for Bitcoin Core will
+often be considerably
+higher, and the oracle will almost always be \emph{much} more powerful.  The answer lies in the
+fact that, even in the presence of such high quality tests, fuzzing
+uncovers subtle bugs that functional tests designed by humans will
+almost never detect,
+e.g. \url{https://github.com/bitcoin/bitcoin/issues/22450}\footnote{Comments
+  on this bug, such as ``Another win for fuzzing, oh wow.'' and
+  ``Fuzzer rulez!'' show that the Bitcoin Core team has little doubt
+  about the power of fuzzing.}.  Fuzzing is \emph{not} a replacement
+for functional/unit tests; and functional/unit tests are not a
+replacement for fuzzing.  In our mutation analysis, consider the two
+mutants detected by {\tt coins\_view} fuzzing alone.  In the
+traditional, score-based, view of mutation analysis, the {\tt
+  coins\_view} fuzz harness would be seen as performing badly.  But it
+detects 2 (hypothetical) bugs not detectable by other means; in the
+real world, if one such bug is exploitable, detecting it may ``pay
+for'' all the fuzzing effort, and there will seldom be just one such
+bug (see
+\url{https://github.com/bitcoin/bitcoin/issues?q=is\%3Aissue+fuzz+is\%3Aclosed+label\%3ABug}
+for an approximate list of fuzzer-detected, fixed bugs in Bitcoin
+Core).  If the ``good guys'' don't fuzz well, you can be sure the bad
+guys will, for software protecting billions of dollars of assets.
 
 \subsection{Comparison with Other Cryptocurrency Codebases}
 
