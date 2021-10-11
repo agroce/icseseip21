@@ -6,9 +6,9 @@
 \midrule
 bitcoin & src/consensus/tx\_verify.cpp & 210 & 78.6\% & 98.7\% & 84.2\% \\
 \cmidrule{2-6}
-\mr{3}{go-ethereum} & core/block\_validator.go & 129 & 70.1\% & 81.0\% & 84.2\% \\
-                    & signer/fourbyte/validation.go & 127 & 49.5\% & 60.0\% & 58.8\% \\
-                    & signer/core/signed\_data.go & 1044 & 25.3\% & 69.3\% & 58.8\% \\
+\mr{3}{go-ethereum} & core/block\_validator.go & 129 & 70.1\% & 81.0\% &  \mr{3}{58.8\%} \\
+                    & signer/fourbyte/validation.go & 127 & 49.5\% & 60.0\% & \\
+                    & signer/core/signed\_data.go & 1044 & 25.3\% & 69.3\% & \\
 \cmidrule{2-6}
     \mr{3}{solana}   & perf/src/sigverify.rs & 1246 & ????\% & 74.48\% & \mr{3}{82.2\%} \\ 
     % & core/src/sigverify\_stage.rs &  296 & ????\% & 88.46\% & \mr{3}{82.2\%} \\  this seems to just call perf/src/sigverify
