@@ -185,5 +185,7 @@ and test both happy and exceptional paths.
 \noindent \textbf{Limitations:} One potential limitation of our analysis is the selection of files relating to transaction and block validation. While our heuristics and manual inspection did lead us to files that fulfilled these
 properties, they were not comprehensive in finding all relevant files. Particularly in cryptocurrencies, such as ethereum, there is no one file that handles all transaction or block validation (a file analagous
 to {\tt tx\_verify.cpp}  in bitcoin), but rather this logic is spread over dozens of different files. As a result, we are not able to make any definitive claims about the quality of these test suites, but rather
-observations regarding mutation score and how good bitcoin's overall mutation score is. Furthermore, as mentioned above more time was spent on bitcoin, meaning that there is a chance that we missed
-some tests that were not documented or easy to find in other cryptocurrencies.
+observations regarding mutation score and how good bitcoin's overall mutation score is. 
+
+Furthermore, another limitation was that we spent more time was spent investigating bitcoin than any other cryptocurrency, meaning that there is a chance that we missed
+some test that were not documented or easy to find in other cryptocurrencies.
