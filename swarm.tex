@@ -8,7 +8,7 @@ API calls, and we are testing a stack with {\tt push}, {\tt pop}, {\tt
 significant length will contain multiple calls to \emph{all} of
 the functions.  In swarm testing, however, for each test \emph{some of the calls
 (with probability usually equal to 0.5 for each call) will be
-disabled}, but \emph{different calls will be disable for each generated
+disabled}, but \emph{different calls} will be disabled for \emph{each generated
 test}.  This produces less variance between calls \emph{within tests}, but
 much more variance \emph{between tests}.  Practically, in the stack
 example, it will enable the size of the stack to grow much larger than
@@ -18,15 +18,67 @@ is widely used in compiler testing
 \cite{le2014compiler} and is a core element of the
 testing for FoundationDB \cite{zhou2021foundationdb}.
 
-Some Bitcoin Core fuzz harnesses resemble API-sequence generation.  In particular, the {\tt process\_messages} produces method sequences of a fixed length, where each message is of a particular type (there are a modest number of message types, again similar to an API-call ``fuzz surface'').  Swarm testing is an obvious candidate approach for enhancing this important fuzz harness.
+\begin{figure}
+{\scriptsize
+\begin{code}
+namespace NetMsgType \{
+  extern const char* VERSION;
+  extern const char* VERACK;
+  extern const char* ADDR;
+  extern const char *ADDRV2;
+  extern const char *SENDADDRV2;
+  extern const char* INV;
+  extern const char* GETDATA;
+  extern const char* MERKLEBLOCK;
+  extern const char* GETBLOCKS;
+  extern const char* GETHEADERS;
+  extern const char* TX;
+  extern const char* HEADERS;
+  extern const char* BLOCK;
+  extern const char* GETADDR;
+  extern const char* MEMPOOL;
+  extern const char* PING;
+  extern const char* PONG;
+  extern const char* NOTFOUND;
+  extern const char* FILTERLOAD;
+  extern const char* FILTERADD;
+  extern const char* FILTERCLEAR;
+  extern const char* SENDHEADERS;
+  extern const char* FEEFILTER;
+  extern const char* SENDCMPCT;
+  extern const char* CMPCTBLOCK;
+  extern const char* GETBLOCKTXN;
+  extern const char* BLOCKTXN;
+  extern const char* GETCFILTERS;
+  extern const char* CFILTER;
+  extern const char* GETCFHEADERS;
+  extern const char* CFHEADERS;
+  extern const char* GETCFCHECKPT;
+  extern const char* CFCHECKPT;
+  extern const char* WTXIDRELAY;
+  \}
+\end{code}
+}
+\caption{The message types declaration in {\tt src/protocol.h}.}
+\label{types}
+\end{figure}
 
-DeepState~\cite{goodman2018deepstate} provides strong support for swarm fuzzing.  However, as with ensemble fuzzing, while there are similarities to the Bitcoin Core infrastucture for fuzz targets and the DeepState API, re-writing the fuzz targets to use DeepState seemed like too large a time investment for the likely payoff without first trying a less ambitious approach.
+Some Bitcoin Core fuzz harnesses resemble API-sequence generation.  In particular, the {\tt process\_messages} harness produces method sequences of a fixed length, where each message is of a particular type (there are  34 distinct message types, again similar to an API-call ``fuzz surface''; see Figure~\ref{types}).  Swarm testing is an obvious candidate approach for enhancing this important fuzz harness.  Inspection of the {\tt process\_messages} code reveals that not only does the harness (\url{https://github.com/bitcoin/bitcoin/blob/master/src/test/fuzz/process_messages.cpp}) not perform swarm testing, it doesn't even pick from the message types; it simply generates an arbitrary string that will be parsed as a message type, a nondeterministic number of times:
+
+\begin{code}
+while (fuzzed\_data\_provider.ConsumeBool()) \{
+  const std::string random\_message\_type\{
+    fuzzed\_data\_provider.ConsumeBytesAsString(
+      CMessageHeader::COMMAND\_SIZE).c\_str()\};
+\end{code}
 
 \begin{sloppypar}
+DeepState~\cite{goodman2018deepstate} (\url{https://github.com/trailofbits/deepstate}) provides strong support for swarm fuzzing.  In DeepState, transforming the call to {\tt ConsumeBytesAsString} to a {\tt OneOf} nondeterministic choice operator over the strings defined in Figure~\ref{types}, and compiling the harness with {\tt -DDEEPSTATE\_PURE\_SWARM} would enable automatic fuzzer controlled swarm testing. However, as with ensemble fuzzing, while there are similarities to the Bitcoin Core infrastucture for fuzz targets and the DeepState API, re-writing the fuzz targets to use DeepState seemed, and change many string generation calls to {\tt OneOf} selections was too large a time investment for the likely payoff without first trying a less ambitious approach.
+
 The solution was to focus on developing a swarm harness for the most promising target, {\tt process\_messages}, alone, and determine if an aggressive campaign on that target would produce substantial new coverage, or even unknown bugs. This {\tt process\_messages\_swarm} harness required modest effort, and could show if the strategy was worth devoting more resources to applying more broadly.  After four weeks of fuzzing, however, the new coverage generated was minimal; less than would be expected from simply devoting that level of effort to the original {\tt process\_messages} target.  Why?
 
 First, it is likely that the automatic translation of more than 10,000 corpus files for {\tt process\_messages} was imperfect.  Parsing raw bitstreams to find commands is hard, and writing a dynamic parser to use in-filght data to extract the meaning of each test was not feasible in the 80 hour effort.  This probably meant some corpus files lost some or all of their value, leaving the new fuzz effort behind the equivalent {\tt process\_messages} fuzz.
 
-Most importantly, however, the {\tt process\_messages} corpus is regularly \emph{cross-seeded} with data from specialized fuzz targets that generate only one type of message, e.g., such as the tests in \url{https://github.com/bitcoin-core/qa-assets/tree/main/fuzz_seed_corpus/process\_message\_mempool}.  This not only provides some of the power of swarm testing, it achieves a second goal of the swarm harness.  Namely, one concern was that since {\tt process\_message} and {\tt process\_messages} generate raw strings that may not even have a valid message type,  the fuzzers spend too much effort fuzzing the type to little benefit.  The specialized targets avoid this problem by fixing the type string.  The ability to run {\tt process\_message} with a single message type and the frequent introduction of resulting data into {\tt process\_messages} probably, in a less automated way, also  achieves many of the benefits of swarm testing itself:  mixing complex lengthy runs of a single type or mix of types.  Where introducing ``real'' swarm testing is difficult, but fuzzing infrastructure supports this mode of operation, it may be a useful alternative.  It is on the other han unclear how many fuzz frameworks are as sophisticated as Bitcoin Core's, making this possible; in many cases simply implementing swarm directly would likely be easier.  It does show that some advanced fuzzing strategies can be anticipated by particularly savvy and capable fuzz effort engineers, willing to directly use raw fuzzing data, and write tools to support that kind of low-level hand-tuning of fuzz corpuses.
+Most importantly, however, the {\tt process\_messages} corpus is regularly \emph{cross-seeded} with data from specialized fuzz targets that generate only one type of message, e.g., such as the tests in \url{https://github.com/bitcoin-core/qa-assets/tree/main/fuzz_seed_corpus/process\_message\_mempool}, which correspond to {\tt extern const char* MEMPOOL} in Figure \ref{types} .  This not only provides some of the power of swarm testing, it achieves a second goal of the swarm harness.  Namely, one concern was that since {\tt process\_message} and {\tt process\_messages} generate raw strings that may not even have a valid message type,  the fuzzers spend too much effort fuzzing the type to little benefit.  The specialized targets avoid this problem by constraining the fuzzing to only generate one type of message when running in the specialized mode.  The ability to run {\tt process\_message} with a single message type and the frequent introduction of the resulting inputs into {\tt process\_messages} (and the generic, unconstrained {\tt process\_message} fuzzing) probably, in a less automated way, also  achieves many of the benefits of swarm testing itself:  mixing complex lengthy runs of a single type or mix of types.  Where introducing ``real'' swarm testing is difficult, but fuzzing infrastructure supports this mode of operation, it may be a useful alternative.  It is on the other hand unclear how many fuzz frameworks are as sophisticated as Bitcoin Core's, making this possible; in many cases simply implementing swarm directly (or writing the harnesses using DeepState) would likely be easier.  It does show that some advanced fuzzing strategies can be anticipated by particularly savvy and capable fuzz engineers, willing to directly use raw fuzzing data, and write tools to support that kind of low-level hand-tuning of fuzz corpuses.
 
 \end{sloppypar}
