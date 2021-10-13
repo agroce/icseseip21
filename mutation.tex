@@ -292,6 +292,11 @@ of this also varied based on test execution time of project and number of candid
 
 \rvt{rvt says: a TODO to address in this subsection, or elsewhere above as examples of mutation testing: a handful of example mutants and/or mutation operators (either those that were unkilled by the Bitcoin runs, or the ones we did in our altcoin experiments) in the form of a readable table or something like that. i think would be really interesting to the reader. e.g., ``what kinds of mutation operators did we decide on? which kinds of mutants survived?''. even if it's standard stuff, it's probably not something the reader wants to guess about, and really is a ``oh that's interesting'' kind of thing to look at. we have the figures but it's difficult to read and these are really trying to make a different point (See discussion) so a table with mutation operators/rules or examples would be awesome}
 
+Table~\ref{tab:rules} shows some of the common rules that we used and some examples of mutations that survived
+from multiple different cryptocurrency projects. For example, one common mutation operator was commenting out a line
+of source code, with live mutants often corresponding with uncovered lines of source code. Some other operators
+included adding break and continue to statements, along with changing binary operators such as \&\& to ||.
+
 Table~\ref{tab:comparison} summarizes our results, which lists the
 \textbf{Mutation score}, \textbf{File coverage}, and \textbf{Project coverage}
 over the selected file. \textbf{Mutation score} represents the proportion of
