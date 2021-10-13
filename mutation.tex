@@ -15,47 +15,49 @@ coverage~\cite{Discontents}.  This is perhaps especially valuable in fuzzing, wh
 only see crashes'' is a persistent concern.
 
 We used the universal mutator
-
-\noindent(\url{https://github.com/agroce/universalmutator})~\cite{regexpMut},
-a mutation tool already used widely in the blockchain and smart contract
-world, to mutate the Bitcoin and other popular cryptocurrencies core transaction verification code.
-Transaction verification is generally fairly well-covered, and obviously an extremely critical functionality for the
-blockchain.
+\noindent(\url{https://github.com/agroce/universalmutator})~\cite{regexpMut}, a
+mutation tool already used widely in the blockchain and smart contract world, to
+mutate the Bitcoin and other popular cryptocurrencies core transaction
+verification code. We focused on transaction verification code, as it is generally well-covered by
+tests, and obviously an extremely critical functionality for the blockchain.
 
 \subsection{Mutation Testing Bitcoin}
 
 \begin{sloppypar}
 
-For bitcoin, we ran universal mutator on {\tt tx\_verify.cpp} code.
-Figure~\ref{kills} shows an overview of the mutation analysis of the file.
+To perform mutation analysis on Bitcoin, we generated mutations for code in the
+{\tt tx\_verify.cpp} file. We then evaluated the ability of fuzzing and testing
+to detect such mutants. Figure~\ref{kills} summarizes our mutation
+analysis of the file.
 
 \begin{figure}
 \vspace{2mm}
 \includegraphics[width=0.9\columnwidth]{kill_pre_valgrind.png}
-\caption{Mutation Kills for {\tt tx\_verify.cpp}}
+\caption{A comparison of mutation kills for {\tt tx\_verify.cpp} when subjected to different testing and fuzzing parameters.}
 \label{kills}
 \end{figure}
 
-The universal mutator generated 430 compiling mutants of the file.
-Two fuzz targets performed interesting testing of the {\tt tx\_verify.cpp} code:
-{\tt process\_message\_tx} and {\tt coins\_view}.  The code was also
-tested by {\tt process\_message} and {\tt process\_messages} but the
-relevant corpus entries were duplicated in {\tt process\_message\_tx}
-(we verified these provided no additional mutant kills).  The fuzzing
-applied was limited to five minutes of libFuzzer exploration based no
-the full (and large) QA asset corpus for each harness, with all
-sanitizers enabled.  The {\tt
-  process\_message\_tx} target was able to detect 24 mutants, and the
-{\tt coins\_view} harness was able to detect 32 mutants, for a total
-of 50 mutants, not quite 12\% of all the generated mutants.  This is
-not a bad result: fuzzing inherently has trouble detecting subtle,
-non-crash-inducing, bugs in code, because writing a strong specification of
-correct behavior that covers all the bizarre and pointless inputs
-produced in fuzzing is often impractical, or would require a
-specification nearly as complex as the code itself.  This is one
-reason \emph{differential} fuzzing is promising: a reference
-implementation is such a specification.  Bitcoin Core's cryptographic
-elements are, in fact, differentially fuzzed
+The universal mutator generated 430 compiling mutants of the file.\rvt{rvt asks:
+  it would be nice if we could say ``We ran universal mutator for X hours which
+  generated 430 ....'', as a reader I find myself wondering how long this took.}
+Two functions with interesting tests overlapped with our fuzzing targets in {\tt
+  tx\_verify.cpp} code: {\tt process\_message\_tx} and {\tt coins\_view}.
+Additional functions {\tt process\_message} and {\tt process\_messages} were
+also fuzz tested and of potential interest, but the relevant corpus entries were
+duplicated in {\tt process\_message\_tx} (we verified these provided no
+additional mutant kills). We ran fuzzing for five minutes using
+libFuzzer exploration based on the full (and large) QA asset corpus for each
+harness, with all sanitizers enabled. The {\tt process\_message\_tx} target was
+able to detect 24 mutants, and the {\tt coins\_view} harness was able to detect
+32 mutants, for a total of 50 mutants. In other words, slightly short of 12\%
+over all the generated mutants. This is not a bad result: fuzzing inherently has
+trouble detecting subtle, non-crash-inducing, bugs in code, because writing a
+strong specification of correct behavior that covers all the bizarre and
+pointless inputs produced in fuzzing is often impractical, or would require a
+specification nearly as complex as the code itself. This is one reason
+\emph{differential} fuzzing is promising: a reference implementation is such a
+specification. Bitcoin Core's cryptographic elements are, in fact,
+differentially fuzzed
 \url{https://github.com/bitcoin/bitcoin/pull/22704#issuecomment-898989809}.
 \end{sloppypar}
 
