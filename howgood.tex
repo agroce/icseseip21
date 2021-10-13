@@ -1,1 +1,17 @@
 \section{How Good is the Bitcoin Core Testing and Fuzzing?}
+
+
+stuff
+
+For both fuzzing and functional tests, some missing coverage and some
+unkilled mutants are almost
+certainly (and stated to be such by Bitcoin Core team members to us)
+redundant or defensive code to protect against ``impossible''
+problems.  This is unsurprising in code intended to be highly reliable;
+coverage of core file system functionality was only 89\% during a year of
+extensive random testing of a file system developed for the Curiosity
+Mars Rover performed by NASA/JPL's Laboratory for Reliable
+Software~\cite{ICSEDiff}.  The missing coverage was mostly defensive,
+redundant code, including fail-safe termination after (presumably
+impossible without hardware failure)
+assertion failures.
