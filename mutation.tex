@@ -136,18 +136,18 @@ guys will, for software protecting billions of dollars of assets.
 \centering
 \begin{tabular}{llrcccc}
 \toprule
-\bf \mr{2}{Project}             & \bf \mr{2}{File Path}                         & \bf \mr{2}{LOC}  & \mc{1}{c}{\bf Mutation} & \mc{1}{c}{\bf File}     & \mc{1}{c}{\bf Project}   & \mc{1}{c}{\bf Inception}               \\
-\bf                             & \bf                                           & \bf              & \mc{1}{c}{\bf Score}    & \mc{1}{c}{\bf Coverage} & \mc{1}{c}{\bf Coverage}  & \mc{1}{c}{\bf Date}                    \\
+\bf \mr{2}{Project}             & \bf \mr{2}{File path}                         & \bf \mr{2}{LOC}  & \mc{1}{c}{\bf Mutation} & \mc{1}{c}{\bf File}     & \mc{1}{c}{\bf Project}   & \mc{1}{c}{\bf Inception}               \\
+\bf                             & \bf                                           & \bf              & \mc{1}{c}{\bf score}    & \mc{1}{c}{\bf coverage} & \mc{1}{c}{\bf coverage}  & \mc{1}{c}{\bf date}                    \\
 \midrule
 bitcoin                         & src/consensus/tx\_verify.cpp                  & 210              & 78.6\%                  & 98.7\%                  & 84.2\%                   & 12/2010                             \\
 \cmidrule{2-7}
 \mr{3}{go-ethereum}             & core/block\_validator.go                      & 129              & 70.1\%                  & 81.0\%                  &  \mr{3}{58.8\%}          & \mr{3}{12/2013}                     \\
                                 & signer/fourbyte/validation.go                 & 127              & 49.5\%                  & 60.0\%                  &                          &                                        \\
-                                & signer/core/signed\_data.go                   & 1044             & 25.3\%                  & 69.3\%                  &                          &                                        \\
+                                & signer/core/signed\_data.go                   & 1,044            & 25.3\%                  & 69.3\%                  &                          &                                        \\
 \cmidrule{2-7}
-\mr{3}{solana}                  & perf/src/sigverify.rs                         & 1246             & ????\%                  & 74.48\%                 & \mr{3}{82.2\%}           &  \mr{3}{02/2018}                    \\
+\mr{3}{solana}                  & perf/src/sigverify.rs                         & 1,246            & ????\%                  & 74.48\%                 & \mr{3}{82.2\%}           &  \mr{3}{02/2018}                    \\
 %                               & core/src/sigverify\_stage.rs                  & 296              & ????\%                  & 88.46\%                 & \mr{3}{82.2\%}           &                                        \\  this seems to just call perf/src/sigverify
-                                & core/src/validator.rs                         & 2016             & -                       & 73.29\%                 &                          &                                        \\
+                                & core/src/validator.rs                         & 2,016            & -                       & 73.29\%                 &                          &                                        \\
                                 & core/src/tvu.rs                               &  494             & -                       & 63.12\%                 &                          &                                        \\
 \cmidrule{2-7}
 dogecoin                        & src/bitcoin-tx.cpp                            & 847              & 58.7\%                  & -                       & 70.1\%                   & 12/2013                              \\
@@ -156,13 +156,15 @@ avalanchego                     & vms/platformvm/add\_subnet\_validator\_tx.go  
 \cmidrule{2-7}
   stellar                       & src/historywork/VerifyTxResultsWork.cpp       & 192              & 85.1\%                  & -                       & -                        & 11/2014                              \\
 \cmidrule{2-7}
-go-algorand                     & ledger/eval.go                                & 1551             & 99.8\%                  & 86.0\%                  & 52.2\%                   & 06/2019                               \\
+go-algorand                     & ledger/eval.go                                & 1,551            & 99.8\%                  & 86.0\%                  & 52.2\%                   & 06/2019                               \\
 \cmidrule{2-7}
 cosmos-sdk                      & x/auth/ante/sigverify.go                      & 510              & 73.1\%                  & -                       &  -                       & 02/2016                              \\
 \bottomrule
 \end{tabular}
-\caption{Code Coverage and Mutation Scores Across Popular Cryptocurrencies. Mutation score represents the proportion of mutants that were killed divided by the total number of mutants (higher is better). Coverage
-metrics reported are at the statement level (proportion of statements covered in a file and in the entire project).}
+\caption{Code Coverage and Mutation Scores Across Popular Cryptocurrencies. \underline{Mutation score} represents the proportion of mutants that were killed divided by the total number of mutants (higher is better).
+\underline{File coverage} and \underline{Project coverage} report statement level coverage for the file and entire project, respectively. \underline{LOC} represents the lines of code of the chosen file. Absent entries indicated by \texttt{-} means we could not
+obtain coverage data, or otherwise curbed additional experiments.
+\rvt{rvt asks: what do we want to say about inception date here, or in the text? i presume there's something interesting to say here since we're including the data...}}
 \label{tab:comparison}
 \end{table*}
 
@@ -180,45 +182,129 @@ metrics reported are at the statement level (proportion of statements covered in
 \label{fig:coverage}
 \end{figure}
 
-We also use mutation testing to (very loosely) compare Bitcoin Core's testing
-with that for other popular cryptocurrencies. Again, we targeted
-transaction validation logic, for the same reasons as given above.
+Our Bitcoin work prompted mutation analysis for other popular cryptocurrencies.
+We generated mutants using the universal mutator for code in Ethereum, Solana,
+Dogecoin, Avalanche, Stellar, Algorand, and Cosmos, a selection from the top 30
+cryptocurrencies\footnote{By market capitalization according to
+\url{https://coinmarketcap.com}.} Our selection is influenced by the
+availability of code coverage, and indicative of the further opportunities for
+mutation testing in Bitcoin and popular altcoins, rather than a
+comprehensive survey. Because it requires significant effort to set up or
+otherwise understand the extent of fuzz testing in this heterogeneous selection
+of projects, our mutation analysis here only considers pure mutation testing
+against the project test suite (no fuzzing).
 
-\subsubsection*{Experimental Setup.} To select
-our corpus, we examined the top 10 cryptocurrencies by market cap. We eliminate stable cryptocurrencies, such as USD coin,
-because they do not have transaction validation logic analagous to bitcoin. For each project, we also run coverage collection
-tools in order to compare code coverage. If a project does not build or have coverage, we also exclude it from our comparison.
+For the same reasons above, we targeted transaction validation logic and
+identified candidate files by searching for keywords like \texttt{transaction},
+\texttt{verify}, \texttt{sign}, and \texttt{validate}. We manually inspected
+functions and test coverage for these functions (where applicable) to identify
+which files would be interesting targets to generate mutants for. Ultimately we
+settled on one to three files per project that are representative of some
+interesting and tested functionality (a choice that we readily acknowledge is by
+no means comprehensive or suggestive of a project's quality and testing as a
+whole).
 
-In the end, the following projects failed to compile: Binance Coin, Polkadot, Chainlink and the following projects did not have
-readily accessable coverage reports: Stellar.
-
-We mutated files that are tested against interesting cryptocurrency properties, like signature verification, transaction and smart contract validity.
-We found candidate files by searching each project for keywords transaction, verify, sign, and validate, manually inspected functions that perform corresponding operations,
-and selected those files for mutation testing.
-
+\subsubsection*{Experimental Setup}
+\rvt{rvt says: a TODO here that answers:
+- what is the range of number of mutants we generated across all projects (min and max)
+- how long did mutant generation take?
+- how many mutation operators (or ``rules'') were used?
+- where they the same or different for each project?
+}
 
 
 \subsubsection*{Experimental Results.}
-Table \ref{tab:comparison} summarizes our results, which compares the mutation score, file coverage and project coverage over these transaction validation files. Mutation score represents the proportion
-of mutants that were killed by the project's test suite divided by the total number of mutants. Higher mutation scores are usually indicative of better test suites, although this approach
-of mutating a small subset of these projects does not entirely reflect overall test suite quality. File and project coverage metrics are both at the statement level.
 
- Interestingly, bitcoin seems to have among the highest coverage and mutation score out of any of the popular cryptocurrencies, with even forks of bitcoin, such as dogecoin having both lower
-project coverage and mutation score. We suspect that this could be due to a variety of factors. Firstly, bitcoin reached out to the first author to investigate the quality of their test suite,
-indicating that they emphasize and care about testing and quality. Secondly, other than go-ethereum, none of the cryptocurrencies besides bitcoin employed any kind of fuzzing, with bitcoin
-employing continuous fuzzing through OSS fuzz to catch bugs. Finally, the bulk of our time was spent investigating bitcoin, making us most familiar with its codebase. There is a possibility
-that we may have missed certain tests in other cryptocurrencies, as even in bitcoin the functional tests were not well-documented and difficult to find as a third party.
+\rvt{rvt says: a TODO to address in this subsection, or elsewhere above as examples of mutation testing: a handful of example mutants and/or mutation operators (either those that were unkilled by the Bitcoin runs, or the ones we did in our altcoin experiments) in the form of a readable table or something like that. i think would be really interesting to the reader. e.g., ``what kinds of mutation operators did we decide on? which kinds of mutants survived?''. even if it's standard stuff, it's probably not something the reader wants to guess about, and really is a ``oh that's interesting'' kind of thing to look at. we have the figures but it's difficult to read and these are really trying to make a different point (See discussion) so a table with mutation operators/rules or examples would be awesome}
 
-Furthermore, there does seem to be a correlation between coverage and mutation score, with files with high coverage typically killing the majority of the generated mutants. In cases with espcially
-low coverage, such as ethereum's block and transaction validation code, many of the generated mutants were related to removing lines handling exceptional cases, which upon examination of the
-file coverage were not covered. An example of this is shown in Figures \ref{fig:mutation}, \ref{fig:coverage}, with both the coverage report and an example mutant generated for ethereum.
-The lack of coverage of these exceptional cases across ethereum and many other low coverage files we examined, was something that surprised us, as we expected these files to have high coverage
-and test both happy and exceptional paths.
+Table~\ref{tab:comparison} summarizes our results, which lists the
+\textbf{Mutation score}, \textbf{File coverage}, and \textbf{Project coverage}
+over the selected file. \textbf{Mutation score} represents the proportion of
+mutants that were killed by the project's test suite divided by the total number
+of mutants (higher is better). File and project metrics represent statement
+coverage. statement level. In principle, we expect that higher file coverage
+(i.e., more tested code) to correlate with a higher mutation score.\rvt{don't
+  know if this needs a cite but that seems intuitive, sort of?}
 
-\subsubsection*{Limitations.} One potential limitation of our analysis is the selection of files relating to transaction and block validation. While our heuristics and manual inspection did lead us to files that fulfilled these
-properties, they were not comprehensive in finding all relevant files. Particularly in cryptocurrencies, such as ethereum, there is no one file that handles all transaction or block validation (a file analagous
-to {\tt tx\_verify.cpp}  in bitcoin), but rather this logic is spread over dozens of different files. As a result, we are not able to make any definitive claims about the quality of these test suites, but rather
-observations regarding mutation score and how good bitcoin's overall mutation score is.
+Out of our selection, Bitcoin's mutation score ranks high. Our experience
+working with Bitcoin Core developers show that they are proactive about code
+quality and testing, which is likely to influence (whether directly or
+indirectly) mutation scores.\rvt{question for Alex: are we comfortable saying
+  something along these lines? just an attempt to reword what the previous
+  sentence here tries to convey. otherwise, let's cut it} At the same time, code
+around transaction verification and validation may naturally vary depending on
+context, code organization, and language as reflected by the differences in
+lines of code in our selection (and unknown function dependencies or testing in
+the rest of the codebase). Thus, the extent of our mutation testing per file
+ultimately serve as individual datapoints that are difficult to compare
+horizontally across projects. \rvt{rvt says: changed things because basically
+  like, cool, bitcoin is high, but like, we're mutating a 210 line file and it
+  has lots of calls to lots of other code and the mutation score could be lower
+  or higher if we decided to mutation test something somewhere else along the
+  callchain that a tx\_verify operation operates on. we really really can't say
+  with confidence or even speculate (IMO) that this mutation score is super meaningful if we're tempted
+to compare it to other projects. Not even Doge fork because it's not the same file? If it were the same file I might feel differently.
+% Previous text:
+%
+% Interestingly, bitcoin seems to have among the highest coverage and mutation
+% score out of any of the popular cryptocurrencies, with even forks of bitcoin,
+% such as dogecoin having both lower project coverage and mutation score.
+}
+
+
+% Secondly, other than go-ethereum, none of the cryptocurrencies besides bitcoin
+% employed any kind of fuzzing, with bitcoin employing continuous fuzzing through
+% OSS fuzz to catch bugs.
+%
+% rvt says: the part about others not doing fuzzing isn't true, at least not based on searching for `fuzz` in other projects:
+% stellar: https://sourcegraph.com/search?q=repo:%5Egithub%5C.com/stellar/stellar-core%24+fuzz&patternType=literal
+% algorand: https://sourcegraph.com/search?q=repo:%5Egithub%5C.com/algorand/go-algorand%24+fuzz&patternType=literal
+% cosmos: https://sourcegraph.com/search?q=repo:%5Egithub%5C.com/cosmos/cosmos-sdk%24+fuzz&patternType=literal
+%
+% don't think we can confidently state the part about continuous fuzzing either, and i don't think we have much to gain from this anyway. at best "maybe fuzzing influences/correlates with mutation testing but like probably that's a very weak connection as per the other text in this paper"
+
+% RVT commenting this out because wee're saying this up front now
+%
+% Furthermore, there does seem to be a correlation between coverage and mutation score, with files with high coverage typically killing the majority of the generated mutants.
+
+Investigating files with lower coverage (e.g., those in Ethereum), we noticed
+that many of the generated mutants removed lines related to error checking
+(e.g., in switch case statements) that were apparently not covered by tests (cf.
+Figures \ref{fig:mutation} and \ref{fig:coverage}).
+
+% RVT says: there may be a chance that the switch case statements are not covered for other reasons (disabled tests, bad coverage tool). Likely these are untested, but I think it's fine to just state our observations.
+%
+% The lack of coverage of these exceptional cases across ethereum and many other low coverage files we examined, % was something that surprised us, as we expected these files to have high coverage
+% and test both happy and exceptional paths.
+
+\subsubsection*{Considerations for further study.}
+
+Unit tests and corresponding coverage reports, while useful in our context of
+mutation testing, contribute only to one aspect of code quality and ignores
+other kinds of testing. Incorporating integration and differential tests with
+coverage would deliver deeper insights of under-tested code and overall code quality.
+
+In a similar vein, we limited our mutation testing to a handful of files based
+on a convenience sample. A deeper mutation analysis with a higher allocation of
+resources (perhaps justifying resources comparable to fuzz testing) poses interesting
+possibilities that may allow more direct comparison and contrast among projects.
+
+\iffalse
+% RVT comments this out because I think we can sidestep the whole thing about "did we pick other targets well and how does it compare to bitcoin" because we really can't compare it anyway, so let's just say "we picked other targets and here's what we see".
+One potential limitation of our analysis is the selection of files relating to transaction and block validation. While our heuristics and manual inspection did lead us to files that fulfilled these
+properties, they were not comprehensive in finding all relevant files.
+Particularly in cryptocurrencies, such as ethereum, there is no one file that
+handles all transaction or block validation (a file analagous to {\tt
+  tx\_verify.cpp} in bitcoin), but rather this logic is spread over dozens of
+different files. As a result, we are not able to make any definitive claims
+about the quality of these test suites, but rather observations regarding
+mutation score and how good bitcoin's overall mutation score is.
+
+Finally, the bulk of our time was spent investigating bitcoin, making us most
+familiar with its codebase. There is a possibility that we may have missed
+certain tests in other cryptocurrencies, as even in bitcoin the functional tests
+were not well-documented and difficult to find as a third party.
 
 Furthermore, another limitation was that we spent more time was spent investigating bitcoin than any other cryptocurrency, meaning that there is a chance that we missed
 some test that were not documented or easy to find in other cryptocurrencies.
+\fi
