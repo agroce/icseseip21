@@ -175,31 +175,31 @@ guys will, for software protecting billions of dollars of assets.
 \begin{table*}[ht!]
 \vspace{2mm}
 \centering
-\begin{tabular}{llrcccc}
+\begin{tabular}{llrccc}
 \toprule
-\bf \mr{2}{Project}             & \bf \mr{2}{File path}                         & \bf \mr{2}{LOC}  & \mc{1}{c}{\bf Mutation} & \mc{1}{c}{\bf File}     & \mc{1}{c}{\bf Project}   & \mc{1}{c}{\bf Inception}               \\
-\bf                             & \bf                                           & \bf              & \mc{1}{c}{\bf score}    & \mc{1}{c}{\bf coverage} & \mc{1}{c}{\bf coverage}  & \mc{1}{c}{\bf date}                    \\
+\bf \mr{2}{Project}             & \bf \mr{2}{File path}                         & \bf \mr{2}{LOC}  & \mc{1}{c}{\bf Mutation} & \mc{1}{c}{\bf File}     & \mc{1}{c}{\bf Project}   \\
+\bf                             & \bf                                           & \bf              & \mc{1}{c}{\bf score}    & \mc{1}{c}{\bf coverage} & \mc{1}{c}{\bf coverage}  \\
 \midrule
-bitcoin                         & src/consensus/tx\_verify.cpp                  & 210              & 78.6\%                  & 98.7\%                  & 84.2\%                   & 12/2010                             \\
-\cmidrule{2-7}
-\mr{3}{go-ethereum}             & core/block\_validator.go                      & 129              & 70.1\%                  & 81.0\%                  &  \mr{3}{58.8\%}          & \mr{3}{12/2013}                     \\
-                                & signer/fourbyte/validation.go                 & 127              & 49.5\%                  & 60.0\%                  &                          &                                        \\
-                                & signer/core/signed\_data.go                   & 1,044            & 25.3\%                  & 69.3\%                  &                          &                                        \\
-\cmidrule{2-7}
-\mr{3}{solana}                  & perf/src/sigverify.rs                         & 1,246            & ????\%                  & 74.48\%                 & \mr{3}{82.2\%}           &  \mr{3}{02/2018}                    \\
-%                               & core/src/sigverify\_stage.rs                  & 296              & ????\%                  & 88.46\%                 & \mr{3}{82.2\%}           &                                        \\  this seems to just call perf/src/sigverify
-                                & core/src/validator.rs                         & 2,016            & -                       & 73.29\%                 &                          &                                        \\
-                                & core/src/tvu.rs                               &  494             & -                       & 63.12\%                 &                          &                                        \\
-\cmidrule{2-7}
-dogecoin                        & src/bitcoin-tx.cpp                            & 847              & 58.7\%                  & -                       & 70.1\%                   & 12/2013                              \\
-\cmidrule{2-7}
-avalanchego                     & vms/platformvm/add\_subnet\_validator\_tx.go  & 308              & 57.3\%                  & 81.0\%                  & 63.6\%                   & 03/2020                              \\
-\cmidrule{2-7}
-  stellar                       & src/historywork/VerifyTxResultsWork.cpp       & 192              & 85.1\%                  & -                       & -                        & 11/2014                              \\
-\cmidrule{2-7}
-go-algorand                     & ledger/eval.go                                & 1,551            & 99.8\%                  & 86.0\%                  & 52.2\%                   & 06/2019                               \\
-\cmidrule{2-7}
-cosmos-sdk                      & x/auth/ante/sigverify.go                      & 510              & 73.1\%                  & -                       &  -                       & 02/2016                              \\
+bitcoin                         & src/consensus/tx\_verify.cpp                  & 210              & 78.6\%                  & 98.7\%                  & 84.2\%                   \\
+\cmidrule{2-6}
+\mr{3}{go-ethereum}             & core/block\_validator.go                      & 129              & 70.1\%                  & 81.0\%                  &  \mr{3}{58.8\%}          \\
+                                & signer/fourbyte/validation.go                 & 127              & 49.5\%                  & 60.0\%                  &                          \\
+                                & signer/core/signed\_data.go                   & 1,044            & 25.3\%                  & 69.3\%                  &                          \\
+\cmidrule{2-6}
+\mr{3}{solana}                  & perf/src/sigverify.rs                         & 1,246            & ????\%                  & 74.48\%                 & \mr{3}{82.2\%}           \\
+%                               & core/src/sigverify\_stage.rs                  & 296              & ????\%                  & 88.46\%                 & \mr{3}{82.2\%}           \\  this seems to just call perf/src/sigverify
+                                & core/src/validator.rs                         & 2,016            & -                       & 73.29\%                 &                          \\
+                                & core/src/tvu.rs                               &  494             & -                       & 63.12\%                 &                          \\
+\cmidrule{2-6}
+dogecoin                        & src/bitcoin-tx.cpp                            & 847              & 58.7\%                  & -                       & 70.1\%                   \\
+\cmidrule{2-6}
+avalanchego                     & vms/platformvm/add\_subnet\_validator\_tx.go  & 308              & 57.3\%                  & 81.0\%                  & 63.6\%                   \\
+\cmidrule{2-6}
+  stellar                       & src/historywork/VerifyTxResultsWork.cpp       & 192              & 85.1\%                  & -                       & -                        \\
+\cmidrule{2-6}
+go-algorand                     & ledger/eval.go                                & 1,551            & 99.8\%                  & 86.0\%                  & 52.2\%                   \\
+\cmidrule{2-6}
+cosmos-sdk                      & x/auth/ante/sigverify.go                      & 510              & 73.1\%                  & -                       &  -                       \\
 \bottomrule
 \end{tabular}
 \caption{Code Coverage and Mutation Scores Across Popular Cryptocurrencies. \underline{Mutation score} represents the proportion of mutants that were killed divided by the total number of mutants (higher is better).
@@ -207,6 +207,26 @@ cosmos-sdk                      & x/auth/ante/sigverify.go                      
 obtain coverage data, or otherwise curbed additional experiments.
 \rvt{rvt asks: what do we want to say about inception date here, or in the text? i presume there's something interesting to say here since we're including the data...}}
 \label{tab:comparison}
+\end{table*}
+
+
+\begin{table*}[ht!]
+\vspace{2mm}
+\centering
+\begin{tabular}{llcc}
+\toprule
+\bf Mutation Operator                          & \bf Project and File                  & \bf Old Code                              & \bf New Code              \\
+\midrule
+Comment out source code line                   & bitcoin - tx\_verify.cpp              & \textcd if (!MoneyRange(coin.out.nValue) || !MoneyRange(nValueIn)) {
+!             return state.Invalid(TxValidationResult::TX\_CONSENSUS, "bad-txns-inputvalues-outofrange");
+          }                                    &                           \\
+bitcoin                                        &                                       &                                           &                           \\
+bitcoin                                        &                                       &                                           &                           \\
+bitcoin                                        &                                       &                                           &                           \\
+\bottomrule
+\end{tabular}
+\caption{Sample of Mutation Rules and Examples for Various Cryptocurrencies that were not killed.}
+\label{tab:rules}
 \end{table*}
 
 \begin{figure}
@@ -252,7 +272,18 @@ whole).
 - how many mutation operators (or ``rules'') were used?
 - where they the same or different for each project?
 }
+We ran the universal mutator on the candidate files above, using both the universal rules and
+language specific rules. There were 92 universal rules (transformations that can apply to
+any language) and between 0 and 20 language specific rules, depending on the source language
+of the project. One can view these rules 
+at \url{https://github.com/agroce/universalmutator/tree/master/universalmutator/static}.
 
+Using these rules, we generated mutant candidates. The number of generated mutants varied depending
+on the source language and length of the candidate file, ranging from 492 (go-ethereum's block\_validator.go) to 
+8567 (go-ethereum's signed\_data.go) mutants. Following the generation of mutants, the universal mutator
+executed these candidate mutants against each project's test suite, reporting mutation score. The runtime
+of this also varied based on test execution time of project and number of candidate mutants, ranging from
+42 minutes (go-ethereum's validation.go) to 32 hours (dogecoin's bitcoin-tx.cpp).
 
 \subsubsection*{Experimental Results.}
 
