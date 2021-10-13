@@ -210,7 +210,6 @@ obtain coverage data, or otherwise curbed additional experiments.
 \label{tab:comparison}
 \end{table*}
 
-
 \begin{table*}[ht!]
 \vspace{2mm}
 \centering
@@ -218,9 +217,12 @@ obtain coverage data, or otherwise curbed additional experiments.
 \toprule
 \bf Mutation Operator                          & \bf Project and File                  & \bf Old Code                              & \bf New Code              \\
 \midrule
-Comment out source code line                   & bitcoin - tx\_verify.cpp              & \textcd if (!MoneyRange(coin.out.nValue) || !MoneyRange(nValueIn)) {
-!             return state.Invalid(TxValidationResult::TX\_CONSENSUS, "bad-txns-inputvalues-outofrange");
-          }                                    &                           \\
+Comment out source code line                   & bitcoin - tx\_verify.cpp              & 
+\begin{lstlisting}
+if (!MoneyRange(coin.out.nValue) || !MoneyRange(nValueIn)) {
+  return state.Invalid(TxValidationResult::TX\_CONSENSUS, "bad-txns-inputvalues-outofrange");
+}    
+\end{lstlisting}                                    &                           \\
 bitcoin                                        &                                       &                                           &                           \\
 bitcoin                                        &                                       &                                           &                           \\
 bitcoin                                        &                                       &                                           &                           \\
