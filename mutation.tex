@@ -39,6 +39,32 @@ analysis of the file.
 \label{kills}
 \end{figure}
 
+\begin{figure*}
+\raggedright
+  
+{\bf Original mutated code (and immediate context):}
+  
+\begin{code}
+    if (coin.IsCoinBase() \&\& nSpendHeight - coin.nHeight < COINBASE\_MATURITY) \{
+            return state.Invalid(TxValidationResult::TX\_PREMATURE\_SPEND, "bad-txns-premature-spend-of-coinbase",
+                strprintf("tried to spend coinbase at depth \%d", nSpendHeight - coin.nHeight));
+\end{code}
+
+{\bf Mutant \#379} changes the {\tt strprintf} to:
+
+\begin{code}
+strprintf("tried to spend coinbase at depth \%d", nSpendHeight / coin.nHeight));
+\end{code}
+      
+{\bf Mutant \#380} changes the {\tt strprintf} to:      
+
+\begin{code}
+strprintf("tried to spend coinbase at depth \%d", nSpendHeight \% coin.nHeight));
+\end{code}
+\caption{Mutants detected \emph{only} by fuzzing.}
+\label{mkills}
+\end{figure*}
+
 The universal mutator generated 430 compiling mutants of the file in
 less than three hours (out of caution, we forced a clean {\tt make} of
 the full Bitcoin build for every mutant, which is expensive for
@@ -79,10 +105,20 @@ enabled catch an additional 278 mutants.  Turning on sanitizers (which
 is very expensive --- we \emph{only} ran it for mutants surviving all other
 tests, as indicated by the zero overlap and the asterisk in Figure~\ref{kills}) catches an additional 12 mutants.  Only 90 of the
 430 compiling mutants survive all tests, for an overall mutation score
-of 79.07\%.  On the other hand, fuzzing only adds two mutant kills to
-the functional testing.
+of 79.07\%.
 
-Moreover, manual inspection of the surviving mutants showed that at
+Fuzzing adds two unique mutant kills beyond those produced by
+the functional testing.  Figure~\ref{mkills} shows the (very similar
+code) for these two mutants.  Only fuzzing generates inputs that cause
+{\tt coin.nHeight} to be zero.  Fuzzing doesn't increase code coverage
+here, but does increase interesting \emph{data value} coverage.  Use
+of the libFuzzer {\tt -use\_value\_profile=1} flag is likely
+instrumental in achieving such good value coverage.  Adding that flag was
+one of the first suggestions in the 80-hour effort, but it turned out
+this was already standard practice in the Bitcoin Core fuzz configuration.
+
+
+Manual inspection of the surviving mutants showed that at
 least 29 of these were clearly semantically equivalent to the
 un-mutated code.  For instance, many mutants removed or weakened an
 assertion; clearly this cannot ever be detected, since it can only
