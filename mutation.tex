@@ -1,4 +1,3 @@
-\lstset{style=cstyle}
 \section{Mutation Analysis}
 
 Attempting to improve a fuzzing effort is one way to find problems
@@ -219,53 +218,69 @@ obtain coverage data, or otherwise curbed additional experiments.
 \bf Mutation Operator                          & \bf Project and File                  & \bf Old Code                              & \bf New Code                               \\
 \midrule
 Comment out source code line                   & bitcoin - tx\_verify.cpp              & 
-\begin{lstlisting}[basicstyle=\tiny]
+\lstset{style=cstyle}
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=none]
 if (!MoneyRange(coin.out.nValue) || !MoneyRange(nValueIn)) {
   return state.Invalid(TxValidationResult::TX_CONSENSUS, 
     "bad-txns-inputvalues-outofrange");
 }    
 \end{lstlisting}                               &
-\begin{lstlisting}[basicstyle=\tiny]
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=none]
 if (!MoneyRange(coin.out.nValue) || !MoneyRange(nValueIn)) {
   /* return state.Invalid(TxValidationResult::TX_CONSENSUS, 
      "bad-txns-inputvalues-outofrange"); */
 }    
 \end{lstlisting}                               \\
 Replace < with ==                              & go-ethereum - block\_validator.go     &
-\begin{lstlisting}[basicstyle=\tiny]
+\lstset{style=gostyle}
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=none]
 if desiredLimit < params.MinGasLimit {
   desiredLimit = params.MinGasLimit
 }  
 \end{lstlisting}                               &
-\begin{lstlisting}[basicstyle=\tiny]
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=none]
 if desiredLimit == params.MinGasLimit {
   desiredLimit = params.MinGasLimit
 }  
 \end{lstlisting}                               \\
 Add continue to statement                      & dogecoin - bitcoin-tx.cpp              &
-\begin{lstlisting}[basicstyle=\tiny]
+\lstset{style=cstyle}
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=none]
 while ((!feof(f)) && (!ferror(f))) {
   char buf[4096];
   ...
 }
 \end{lstlisting}                               &
-\begin{lstlisting}[basicstyle=\tiny]
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=none]
 while ((!feof(f)) && (!ferror(f))) {
   char buf[4096];
   continue;
   ...
 }
 \end{lstlisting}                               \\
-Add break to statement                         & bitcoin - tx\_verify.cpp &
-\begin{lstlisting}[basicstyle=\tiny]
+Add break to statement                         & bitcoin - tx\_verify.cpp               &
+\lstset{style=cstyle}
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=none]
 for (const auto& txin : tx.vin) {
   nSigOps += txin.scriptSig.GetSigOpCount(false);
 }
 \end{lstlisting}                               &
-\begin{lstlisting}[basicstyle=\tiny]
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=none]
 for (const auto& txin : tx.vin) {
   break;
   nSigOps += txin.scriptSig.GetSigOpCount(false);
+}
+\end{lstlisting}                              \\
+Flip arguments of function                    & go-ethereum - validation.go             &
+\lstset{style=gostyle}
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=none]
+if tx.Data != nil && tx.Input != nil && !bytes.Equal(*tx.Data, *tx.Input) {
+  return nil, errors.New(`ambiguous request: both "data" and "input" are set and are not identical`)
+}
+\end{lstlisting}                               &
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=none]
+if tx.Data != nil && tx.Input != nil && !bytes.Equal(*tx.Input, *tx.Data) {
+  return nil, errors.New(`ambiguous request: both "data" and "input" are set and are not identical`)
 }
 \end{lstlisting}                              \\
 \bottomrule
