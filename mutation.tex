@@ -1,3 +1,4 @@
+\lstset{style=cstyle}
 \section{Mutation Analysis}
 
 Attempting to improve a fuzzing effort is one way to find problems
@@ -215,17 +216,58 @@ obtain coverage data, or otherwise curbed additional experiments.
 \centering
 \begin{tabular}{llcc}
 \toprule
-\bf Mutation Operator                          & \bf Project and File                  & \bf Old Code                              & \bf New Code              \\
+\bf Mutation Operator                          & \bf Project and File                  & \bf Old Code                              & \bf New Code                               \\
 \midrule
 Comment out source code line                   & bitcoin - tx\_verify.cpp              & 
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle=\tiny]
 if (!MoneyRange(coin.out.nValue) || !MoneyRange(nValueIn)) {
-  return state.Invalid(TxValidationResult::TX\_CONSENSUS, "bad-txns-inputvalues-outofrange");
+  return state.Invalid(TxValidationResult::TX_CONSENSUS, 
+    "bad-txns-inputvalues-outofrange");
 }    
-\end{lstlisting}                                    &                           \\
-bitcoin                                        &                                       &                                           &                           \\
-bitcoin                                        &                                       &                                           &                           \\
-bitcoin                                        &                                       &                                           &                           \\
+\end{lstlisting}                               &
+\begin{lstlisting}[basicstyle=\tiny]
+if (!MoneyRange(coin.out.nValue) || !MoneyRange(nValueIn)) {
+  /* return state.Invalid(TxValidationResult::TX_CONSENSUS, 
+     "bad-txns-inputvalues-outofrange"); */
+}    
+\end{lstlisting}                               \\
+Replace < with ==                              & go-ethereum - block\_validator.go     &
+\begin{lstlisting}[basicstyle=\tiny]
+if desiredLimit < params.MinGasLimit {
+  desiredLimit = params.MinGasLimit
+}  
+\end{lstlisting}                               &
+\begin{lstlisting}[basicstyle=\tiny]
+if desiredLimit == params.MinGasLimit {
+  desiredLimit = params.MinGasLimit
+}  
+\end{lstlisting}                               \\
+Add continue to statement                      & dogecoin - bitcoin-tx.cpp              &
+\begin{lstlisting}[basicstyle=\tiny]
+while ((!feof(f)) && (!ferror(f))) {
+  char buf[4096];
+  ...
+}
+\end{lstlisting}                               &
+\begin{lstlisting}[basicstyle=\tiny]
+while ((!feof(f)) && (!ferror(f))) {
+  char buf[4096];
+  continue;
+  ...
+}
+\end{lstlisting}                               \\
+Add break to statement                         & bitcoin - tx\_verify.cpp &
+\begin{lstlisting}[basicstyle=\tiny]
+for (const auto& txin : tx.vin) {
+  nSigOps += txin.scriptSig.GetSigOpCount(false);
+}
+\end{lstlisting}                               &
+\begin{lstlisting}[basicstyle=\tiny]
+for (const auto& txin : tx.vin) {
+  break;
+  nSigOps += txin.scriptSig.GetSigOpCount(false);
+}
+\end{lstlisting}                              \\
 \bottomrule
 \end{tabular}
 \caption{Sample of Mutation Rules and Examples for Various Cryptocurrencies that were not killed.}
@@ -295,7 +337,7 @@ of this also varied based on test execution time of project and number of candid
 Table~\ref{tab:rules} shows some of the common rules that we used and some examples of mutations that survived
 from multiple different cryptocurrency projects. For example, one common mutation operator was commenting out a line
 of source code, with live mutants often corresponding with uncovered lines of source code. Some other operators
-included adding break and continue to statements, along with changing binary operators such as \&\& to ||.
+included adding break and continue to statements, along with changing binary operators such as < to ==.
 
 Table~\ref{tab:comparison} summarizes our results, which lists the
 \textbf{Mutation score}, \textbf{File coverage}, and \textbf{Project coverage}

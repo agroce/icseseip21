@@ -30,6 +30,7 @@
 \usepackage{multirow}
 \usepackage{multicol}
 \usepackage{listings}
+\usepackage{xcolor}
 
 %%% The following is specific to Onward! '21 and the paper
 %%% 'Let a Thousand Flowers Bloom: On the Uses of Diversity in Software Testing'
@@ -100,6 +101,61 @@
 \newcommand{\clg}[1]{\textcolor{blue}{#1}}
 \newcommand{\rvt}[1]{\textcolor{purple}{#1}}
 \newcommand{\kj}[1]{\textcolor{olive}{#1}}
+
+\definecolor{dkgreen}{rgb}{0,0.5,0}
+\definecolor{dkred}{rgb}{0.5,0,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{vlgray}{gray}{0.95}
+\definecolor{lgray}{gray}{0.7}
+\definecolor{bluehighlight}{HTML}{46adb7}
+\definecolor{orangehighlight}{HTML}{e3a24d}
+\definecolor{redhighlight}{HTML}{b95e8c}
+
+\lstdefinestyle{gostyle}{
+  basicstyle=\ttfamily\bfseries\scriptsize\linespread{1.1},
+  frameround=tttt,
+  frame=single,
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkred},
+  stringstyle=\color{dkgreen},
+  keepspaces=true,              % very important to preserve space after ' in footnote
+  numbers=left,
+  breaklines=true,
+  otherkeywords={::=},
+  numberstyle=\ttfamily\footnotesize\color{gray},
+  stepnumber=1,
+  numbersep=8pt,
+  backgroundcolor=\color{white},
+  tabsize=4,
+  showspaces=false,
+  showstringspaces=false,
+  xleftmargin=.18in,
+  captionpos=b,
+  escapeinside={(?}{?)},
+}
+
+\lstdefinestyle{cstyle}{
+language=c,
+basicstyle=\ttfamily\bfseries\scriptsize,
+  morekeywords={virtualinvoke},
+  keywordstyle=\color{blue},
+  ndkeywordstyle=\color{red},
+  commentstyle=\color{dkred},
+  stringstyle=\color{dkgreen},
+  keepspaces=true,              % very important to preserve space after ' in footnote
+  breaklines=true,
+  numberstyle=\ttfamily\footnotesize\color{gray},
+  stepnumber=1,
+  numbersep=10pt,
+  backgroundcolor=\color{white},
+  tabsize=4,
+  showspaces=false,
+  showstringspaces=false,
+  xleftmargin=.23in,
+  captionpos=b,
+  escapeinside={(?}{?)},
+  escapeinside={$}{$}
+}
 
 %%
 %% The abstract is a short summary of the work to be presented in the
