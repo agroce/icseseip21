@@ -115,21 +115,23 @@ tests do not induce a crash.
 Building fuzz harnesses with complex correctness checks is hard, of
 course; the functional tests know exactly what inputs are being
 provided to APIs, and can check for expected behavior.  Trying to
-inject this kind of check into fuzz harnesses is hard.  When
+inject this kind of check into fuzz harnesses ranges from non-trivial
+to effectively impossible (for some properties).  When
 applicable, more generic, ``mathematical'' constraints such as are
 used in property-based testing~\cite{ClaessenH00} can help, but these
 are often hard to apply at the end-to-end level of a fuzz harness,
-without turning the fuzz harnesses into a spaghetti code mess of
-checks for various properties of the inputs.  In the worst case, these
+without turning the fuzz harness into a spaghetti code mess of
+checks for various qualities of the inputs.  In the worst case, these
 end up simply reflecting developer/tester notions that already found
 their way into the code itself.  Differential testing~\cite{Differential} against other
 implementations might also help here, but is probably best done at a
-higher end-to-end level than inside these fuzz targets.
+higher end-to-end level than inside these specific fuzz targets (this
+is already done on some cryptographic elements of the code).
 
 There is no
 easy solution to this problem, but the most promising route is
 probably to focus
-on adding invariant assertions to the non-test code itself; these assertions can be executed by
+on adding \emph{invariants and assertions} to the non-test code itself; these checks can be executed by
 both functional and fuzz tests, and avoid the problem of duplicating
 analysis of inputs.  At
 present, the Bitcoin Core code has about 1,800 {\tt assert}
@@ -141,13 +143,12 @@ Given that Bitcoin Core has more than 1,800 functions with {\tt void}
 type (functions that cannot provide a value to check in a higher
 function, other than a side effect) alone, the code base obviously
 doesn't meet the NASA/JPL proposal of having an average of two
-assertions per function in a critical
-codebase~\cite{holzmann2006power}.  There are only five assert
+assertions per function~\cite{holzmann2006power}.  There are only five assert
 statements in the {\tt src/consensus} directory, which has about 500
 lines of code, suggesting that this ratio is not notably higher in the
 most critical code.
 
-The conclusion of the 80 hour effort therefore, is that the most
+One conclusion of the 80 hour effort therefore, is that the most
 effective way to improve fuzzing at present might be not to focus on
 covering the code and state space, but to focus on increasing the
 oracle power of \emph{all} Bitcoin Core testing.  Arguably, the
