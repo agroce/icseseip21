@@ -68,9 +68,10 @@ strprintf("tried to spend coinbase at depth \%d", nSpendHeight \% coin.nHeight))
 \end{figure*}
 
 The universal mutator generated 430 compiling mutants of the file in
-less than three hours (out of caution, we forced a clean {\tt make} of
-the full Bitcoin build for every mutant, which is expensive for
-compiling mutants).
+less than three hours\footnote{Building all test and fuzz targets for each
+candidate mutant takes some time, and parallelizing the task would
+require multiple sandboxed copies of the code. Constructing a more
+focused build command than {\tt make -j5}, that avoids building most tests, might speed this up substantially}.
 Two functions with interesting tests overlapped with our fuzzing targets in {\tt
   tx\_verify.cpp} code: {\tt process\_message\_tx} and {\tt coins\_view}.
 Additional functions {\tt process\_message} and {\tt process\_messages} were
