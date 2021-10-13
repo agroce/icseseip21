@@ -14,12 +14,14 @@ valuable information on \emph{oracle power} in addition to mere
 coverage~\cite{Discontents}.  This is perhaps especially valuable in fuzzing, where ``you
 only see crashes'' is a persistent concern.
 
+\begin{sloppypar}
 We used the universal mutator
 \noindent(\url{https://github.com/agroce/universalmutator})~\cite{regexpMut}, a
 mutation tool already used widely in the blockchain and smart contract world, to
 mutate the Bitcoin and other popular cryptocurrencies core transaction
 verification code. We focused on transaction verification code, as it is generally well-covered by
 tests, and obviously an extremely critical functionality for the blockchain.
+\end{sloppypar}
 
 \subsection{Mutation Testing Bitcoin}
 
@@ -37,9 +39,10 @@ analysis of the file.
 \label{kills}
 \end{figure}
 
-The universal mutator generated 430 compiling mutants of the file.\rvt{rvt asks:
-  it would be nice if we could say ``We ran universal mutator for X hours which
-  generated 430 ....'', as a reader I find myself wondering how long this took.}
+The universal mutator generated 430 compiling mutants of the file in
+less than three hours (out of caution, we forced a clean {\tt make} of
+the full Bitcoin build for every mutant, which is expensive for
+compiling mutants).
 Two functions with interesting tests overlapped with our fuzzing targets in {\tt
   tx\_verify.cpp} code: {\tt process\_message\_tx} and {\tt coins\_view}.
 Additional functions {\tt process\_message} and {\tt process\_messages} were
@@ -93,7 +96,7 @@ none of the surviving mutants seem to expose serious testing
 problems.  After manual pruning, the mutation score is 85.8\%, and
 some of the remaining 61 mutants are likely also equivalent.  The
 limitations of the fuzzing oracle are clear: fuzzing covers 98\% of
-statements and72.6\% of branches as we write, but can kill fewer than
+statements and 72.6\% of branches as we write, but can kill fewer than
 12\% of mutants.  The much greater killing power of the functional
 tests obviously does not lie in the marginal 0.7 percentage points and 0.5
 percentage points of statement and branch coverage obtained; it lies
