@@ -9,10 +9,12 @@ purposes, already performed by alternative means.  An alternative is
 to directly look for holes in testing.  The Bitcoin Core fuzzing team
 clearly was measuring and inspecting code coverage (see \url{https://marcofalke.github.io/btc_cov/}), so little value
 would be added by inspecting traditional coverage alone.  Mutation
-testing/analysis~\cite{MutationSurvey}, however, subsumes code coverage and adds extremely
+testing/analysis~\cite{MutationSurvey,budd1979mutation,demillo1978hints}, however, subsumes code coverage and adds extremely
 valuable information on \emph{oracle power} in addition to mere
 coverage~\cite{Discontents}.  This is perhaps especially valuable in fuzzing, where ``you
-only see crashes'' is a persistent concern.
+only see crashes'' is a persistent concern.  In previous work, we had
+used mutation testing to improve the random testing of the Linux
+kernel's RCU module, and in the process discovered some subtle kernel bugs~\cite{mutKernel,groce2018verified}.
 
 \begin{sloppypar}
 We used the universal mutator
