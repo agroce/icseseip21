@@ -1,8 +1,86 @@
 \section{How Good is the Bitcoin Core Testing and Fuzzing?}
 
+In a sense this is a fundamentally hard question to answer: certainly,
+an 80 hour effort by one fuzzing researcher, who was generally
+familliar with blockchain and Bitcoin technology, but not at all
+familliar with the Bitcoin Core implementation, in terms of high level
+approach, testing infrastructure, or (of course) detailed codebase,
+cannot provide anything like a definitive answer to that question.
 
-stuff
+The previous section discusses our limited effort to place the Bitcoin
+Core test effort in the context of other cryptocurrencies, but the
+limits of that evaluation make it hard to draw strong conclusions.
+The complexities of the test efforts and the various ways the systems
+could be compared make this a weak basis for evaluating Bitcoin Core itself.
+Bitcoin Core has about 10,000 lines of fuzz harness code; Go-Ethereum
+has about 74KLOC of fuzz harness code; is the fuzzing thus likely to
+be 7 times better?  We don't claim to know.  Instead, we base an
+evaluation on the effort to improve Bitcoin Core fuzzing, itself.
 
+The initial fuzzing effort, at the time of contact, was certainly
+operating in a suboptimal way,
+and hence \emph{seemed} to be facing a difficult saturation problem.
+However, the simplest of industrial-fuzzing-savvy advice (run the fuzzers longer, add the system
+to OSS-Fuzz, try more fuzzers) was sufficient to make the
+fundamentally sound fuzzing basis more useful.
+
+Additional efforts to improve the fuzzing added some value in terms of
+new corpus entries, and paved
+the way for better documented, and more systematic, application of a
+variety of fuzzers.  Fundamentally, however, these improvements were
+relatively small compared to the overall scope of Bitcoin testing.
+This was substantially due to the limited timeframe, but not due to either a
+lack of expertise or serious attempts to improve fuzzing, given that
+timeframe, we believe.
+
+The basic cause of the limited improvement was that, at present,
+Bitcoin Core has a well-designed and effective fuzzing infrastructure,
+supported by intelligent manual augmentation of the more automated
+aspects of the fuzzing.
+
+\subsection{The Bitcoin Core Fuzzing Infrastructure}
+
+\begin{figure}
+  {\scriptsize
+  \begin{code}
+    FUZZ\_TARGET(parse\_script)
+\{
+    const std::string script\_string(buffer.begin(), buffer.end());
+    try {
+        (void)ParseScript(script\_string);
+    } catch (const std::runtime\_error\&) {
+    }
+\}
+\end{code}
+}
+\caption{Fuzz target for script parsing.}
+\label{script}
+\end{figure}
+  
+
+\begin{sloppypar}
+The basic fuzzing infrastructure for Bitcoin resides in {\tt
+  src/tests/fuzz}, which consists of about 200 fuzz target
+implementations, ranging in size from a few lines to about 500 lines,
+plus common infrastructure, primarily found in {\tt
+  FuzzedDataProvider.h}.  The fuzzing implementation is compact, but
+supports a common way to write fuzz targets that perform fuzz
+generation of C++ generic and Bitcoin-specific data structures.  The
+generators are designed to allow different fuzzers to serve as the
+``back end'' of the system, as in DeepState.  This approach allows
+some targets to be very compact, e.g., see Figure \ref{script}.
+
+In two weeks, it is impossible to examine every fuzz target in detail,
+much less understand how they interact with the targeted code, but
+most inspected targets are well-designed, and in cases where targets
+appear to be too generic, wasting time, as with {\tt
+  process\_message}, there seems to be manual seeding that avoids the
+problem of forcing fuzzers to generate too many magic strings.
+\end{sloppypar}
+
+One sign that the fuzzing is of reasonable quality is that the gap in code
+coverage between fuzzing and manually constructed, extensive,
+functional tests is not very large.  
 For both fuzzing and functional tests, some missing coverage and some
 unkilled mutants are almost
 certainly (and stated to be such by Bitcoin Core team members to us)
@@ -15,3 +93,67 @@ Software~\cite{ICSEDiff}.  The missing coverage was mostly defensive,
 redundant code, including fail-safe termination after (presumably
 impossible without hardware failure)
 assertion failures.
+
+\subsection{Improving Bitcoin Core Fuzzing}
+
+The lack of a huge coverage gap, and the existence of a huge
+mutant-detection gap, between the fuzzing and the functional tests
+suggests the most promising method for improving the Bitcoin Core
+fuzzing: manual, expert (in the codebase) effort to improve the
+oracles used by existing fuzz targets, or efforts to craft custom,
+more restricted, fuzz targets with stronger oracles when this is not
+feasible.
+
+Essentially, the lack of a huge coverage gap suggests that failure to
+explore the input space is not the biggest problem for the Bitcoin
+Core fuzzing; there's significant room for improvement, especially
+with some targets, but overall the coverage, especially for critical
+code, is good.  What the mutation testing reveals is that many fuzz
+executions that would be rejected by the standards of the functional
+tests do not induce a crash.
+
+Building fuzz harnesses with complex correctness checks is hard, of
+course; the functional tests know exactly what inputs are being
+provided to APIs, and can check for expected behavior.  Trying to
+inject this kind of check into fuzz harnesses ranges from non-trivial
+to effectively impossible (for some properties).  When
+applicable, more generic, ``mathematical'' constraints such as are
+used in property-based testing~\cite{ClaessenH00} can help, but these
+are often hard to apply at the end-to-end level of a fuzz harness,
+without turning the fuzz harness into a spaghetti code mess of
+checks for various qualities of the inputs.  In the worst case, these
+end up simply reflecting developer/tester notions that already found
+their way into the code itself.  Differential testing~\cite{Differential} against other
+implementations might also help here, but is probably best done at a
+higher end-to-end level than inside these specific fuzz targets (this
+is already done on some cryptographic elements of the code).
+
+There is no
+easy solution to this problem, but the most promising route is
+probably to focus
+on adding \emph{invariants and assertions} to the non-test code itself; these checks can be executed by
+both functional and fuzz tests, and avoid the problem of duplicating
+analysis of inputs.  At
+present, the Bitcoin Core code has about 1,800 {\tt assert}
+statements, over a codebase of about 180KLOC of C and C++.  The resulting ratio
+of about one assertion per 100 lines of code is not terrible, but is
+at the lower limit of what many consider to be an acceptable assertion
+ratio for critical code.
+Given that Bitcoin Core has more than 1,800 functions with {\tt void}
+type (functions that cannot provide a value to check in a higher
+function, other than a side effect) alone, the code base obviously
+doesn't meet the NASA/JPL proposal of having an average of two
+assertions per function~\cite{holzmann2006power}.  There are only five assert
+statements in the {\tt src/consensus} directory, which has about 500
+lines of code, suggesting that this ratio is not notably higher in the
+most critical code.
+
+One conclusion of the 80 hour effort therefore, is that the most
+effective way to improve fuzzing at present might be not to focus on
+covering the code and state space, but to focus on increasing the
+oracle power of \emph{all} Bitcoin Core testing.  Arguably, the
+greatest weakness of traditional code coverage is that it focuses too
+much attention on the ``input side'' of testing and too little on the
+oracle side~\cite{barr2014oracle}, which is easier for even dedicated
+testing efforts to neglect in the pursuit of covering every branch and
+path.
