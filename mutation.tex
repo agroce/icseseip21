@@ -332,23 +332,21 @@ whole).
 We ran the universal mutator on the candidate files above, using both universal and
 language specific rules. There were 92 universal rules (transformations that can apply to
 any language) and between 0 and 20 language specific rules, depending on the source language
-of the project. One can view these rules
-at \url{https://github.com/agroce/universalmutator/tree/master/universalmutator/static}.
-
-Using these rules, we generated mutant candidates. The number of generated mutants varied depending
-on the source language and length of the candidate file, ranging from
-492 (go-ethereum's {\tt block\_validator.go}) to
-8567 (go-ethereum's {\tt signed\_data.go}) mutants. Following the generation of mutants, the universal mutator
-executed these candidate mutants against each project's test suite, reporting mutation score. The runtime
-of this step also varied based on test execution time of project and number of candidate mutants, ranging from
+of the project.\footnote{See \url{https://github.com/agroce/universalmutator/tree/master/universalmutator/static}}
+Across all projects, our rules generated between 492 and 8,567 mutants per file.
+% RVT says: think just the range is good enough, keeping the actual files in comments because it's good to know for ourselves.
+% 492 (go-ethereum's {\tt block\_validator.go}) to
+% 8567 (go-ethereum's {\tt signed\_data.go}) mutants.
+We executed mutant files against each project's test suite using universal mutator to obtain a final mutation score. The runtime
+of this step naturally varies depending on test suite execution speed and candidates per file, ranging from
 42 minutes (go-ethereum's {\tt validation.go}) to 32 hours (dogecoin's
 {\tt bitcoin-tx.cpp}).
 
 \subsubsection*{Experimental results.}
 
 Table~\ref{tab:rules} shows some of the common rules that we used and some examples of mutations that survived
-from multiple different cryptocurrency projects. For example, one common mutation operator was commenting out a line
-of source code, with live mutants often corresponding with uncovered lines of source code. Some other operators
+from multiple different cryptocurrency projects. For example, one common mutation operator comments out a line
+of source code, with live mutants often corresponding with uncovered lines of source code. Other operators
 included adding {\tt break} and {\tt continue} to statements, along with changing binary operators such as \texttt{<} to \texttt{==}.
 
 Table~\ref{tab:comparison} summarizes our results, and lists the
