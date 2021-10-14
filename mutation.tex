@@ -61,9 +61,9 @@ analysis of the file.
 
 \begin{figure*}
 \raggedright
-  
+
 {\bf Original mutated code (and immediate context):}
-  
+
 \begin{code}
     if (coin.IsCoinBase() \&\& nSpendHeight - coin.nHeight < COINBASE\_MATURITY) \{
             return state.Invalid(TxValidationResult::TX\_PREMATURE\_SPEND, "bad-txns-premature-spend-of-coinbase",
@@ -75,8 +75,8 @@ analysis of the file.
 \begin{code}
 strprintf("tried to spend coinbase at depth \%d", nSpendHeight / coin.nHeight));
 \end{code}
-      
-{\bf Mutant \#380} changes the {\tt strprintf} to:      
+
+{\bf Mutant \#380} changes the {\tt strprintf} to:
 
 \begin{code}
 strprintf("tried to spend coinbase at depth \%d", nSpendHeight \% coin.nHeight));
@@ -244,21 +244,21 @@ obtain coverage data, or otherwise curbed additional experiments.
 \toprule
 \bf Mutation Operator                          & \bf Project and File                  & \bf Mutation Example   \\
 \midrule
-Comment out source code line                   & bitcoin - tx\_verify.cpp              & 
+Comment out source code line                   & bitcoin - tx\_verify.cpp              &
 \begin{lstlisting}[language=C2diff]
 if (!MoneyRange(coin.out.nValue) || !MoneyRange(nValueIn)) {
--  return state.Invalid(TxValidationResult::TX_CONSENSUS, 
+-  return state.Invalid(TxValidationResult::TX_CONSENSUS,
 -     "bad-txns-inputvalues-outofrange");
-+  /* return state.Invalid(TxValidationResult::TX_CONSENSUS, 
++  /* return state.Invalid(TxValidationResult::TX_CONSENSUS,
 +     "bad-txns-inputvalues-outofrange"); */
-}    
+}
 \end{lstlisting}                               \\
 Replace < with ==                              & go-ethereum - block\_validator.go     &
 \begin{lstlisting}[language=Godiff]
 - if desiredLimit < params.MinGasLimit {
 + if desiredLimit == params.MinGasLimit {
   desiredLimit = params.MinGasLimit
-}  
+}
 \end{lstlisting}                               \\
 Add continue to statement                      & dogecoin - bitcoin-tx.cpp              &
 \begin{lstlisting}[language=C2diff]
@@ -277,7 +277,7 @@ for (const auto& txin : tx.vin) {
 \end{lstlisting}                              \\
 Flip arguments of function                    & go-ethereum - validation.go             &
 \begin{lstlisting}[language=Godiff]
-if tx.Data != nil && tx.Input != nil 
+if tx.Data != nil && tx.Input != nil
 -       && !bytes.Equal(*tx.Data, *tx.Input) {
 +       && !bytes.Equal(*tx.Input, *tx.Data) {
   return nil, errors.New(`...`)
@@ -331,12 +331,12 @@ whole).
 We ran the universal mutator on the candidate files above, using both universal and
 language specific rules. There were 92 universal rules (transformations that can apply to
 any language) and between 0 and 20 language specific rules, depending on the source language
-of the project. One can view these rules 
+of the project. One can view these rules
 at \url{https://github.com/agroce/universalmutator/tree/master/universalmutator/static}.
 
 Using these rules, we generated mutant candidates. The number of generated mutants varied depending
 on the source language and length of the candidate file, ranging from
-492 (go-ethereum's {\tt block\_validator.go}) to 
+492 (go-ethereum's {\tt block\_validator.go}) to
 8567 (go-ethereum's {\tt signed\_data.go}) mutants. Following the generation of mutants, the universal mutator
 executed these candidate mutants against each project's test suite, reporting mutation score. The runtime
 of this step also varied based on test execution time of project and number of candidate mutants, ranging from
@@ -367,9 +367,9 @@ indirectly) mutation scores.  At the same time, code
 for transaction verification and validation may naturally vary depending on
 context, code organization, and language, as reflected by the differences in
 lines of code in our selection (and unknown function dependencies or testing in
-the rest of the code-base). Thus, our mutation testing 
+the rest of the code-base). Thus, our mutation testing
 ultimately is best understood as a set of individual data points that are difficult to compare
-horizontally across projects. 
+horizontally across projects.
 % Previous text:
 %
 % Interestingly, bitcoin seems to have among the highest coverage and mutation
