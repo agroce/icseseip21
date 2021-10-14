@@ -198,44 +198,6 @@ guys will, for software protecting billions of dollars of assets.
 
 \subsection{Other Cryptocurrency Projects}
 
-% for solana, these are app.codecov.io/gh/solana-labs/solana @a6a4cfd numbers. grcov
-% doesn't include tests, but reports coverage % as a total over lines including
-% tests, so it's also not accurate. we'll just over approximate rather than
-% underapproximate and acknowledge that in the text
-\begin{table*}[ht!]
-\vspace{2mm}
-\centering
-\begin{tabular}{llrccc}
-\toprule
-\bf \mr{2}{Project}             & \bf \mr{2}{File path}                         & \bf \mr{2}{LOC}  & \mc{1}{c}{\bf Mutation} & \mc{1}{c}{\bf File}     & \mc{1}{c}{\bf Project}   \\
-\bf                             & \bf                                           & \bf              & \mc{1}{c}{\bf score}    & \mc{1}{c}{\bf coverage} & \mc{1}{c}{\bf coverage}  \\
-\midrule
-bitcoin                         & src/consensus/tx\_verify.cpp                  & 210              & 78.6\%                  & 98.7\%                  & 84.2\%                   \\
-\cmidrule{2-6}
-\mr{3}{go-ethereum}             & core/block\_validator.go                      & 129              & 70.1\%                  & 81.0\%                  &  \mr{3}{58.8\%}          \\
-                                & signer/fourbyte/validation.go                 & 127              & 49.5\%                  & 60.0\%                  &                          \\
-                                & signer/core/signed\_data.go                   & 1,044            & 25.3\%                  & 69.3\%                  &                          \\
-\cmidrule{2-6}
-\mr{3}{solana}                  & perf/src/sigverify.rs                         & 1,246            & ????\%                  & 74.48\%                 & \mr{3}{82.2\%}           \\
-%                               & core/src/sigverify\_stage.rs                  & 296              & ????\%                  & 88.46\%                 & \mr{3}{82.2\%}           \\  this seems to just call perf/src/sigverify
-                                & core/src/validator.rs                         & 2,016            & -                       & 73.29\%                 &                          \\
-                                & core/src/tvu.rs                               &  494             & -                       & 63.12\%                 &                          \\
-\cmidrule{2-6}
-dogecoin                        & src/bitcoin-tx.cpp                            & 847              & 58.7\%                  & -                       & 70.1\%                   \\
-\cmidrule{2-6}
-avalanchego                     & vms/platformvm/add\_subnet\_validator\_tx.go  & 308              & 57.3\%                  & 81.0\%                  & 63.6\%                   \\
-\cmidrule{2-6}
-  stellar                       & src/historywork/VerifyTxResultsWork.cpp       & 192              & 85.1\%                  & -                       & -                        \\
-\cmidrule{2-6}
-cosmos-sdk                      & x/auth/ante/sigverify.go                      & 510              & 73.1\%                  & 67.0\%                  & 60.9\%                   \\
-\bottomrule
-\end{tabular}
-\caption{Code Coverage and Mutation Scores Across Popular Cryptocurrencies. \underline{Mutation score} represents the proportion of mutants that were killed divided by the total number of mutants (higher is better).
-\underline{File coverage} and \underline{Project coverage} report statement level coverage for the file and entire project, respectively. \underline{LOC} represents the lines of code of the chosen file. Absent entries indicated by \texttt{-} means we could not
-obtain coverage data, or otherwise curbed additional experiments.
-}
-\label{tab:comparison}
-\end{table*}
 
 \begin{table*}[ht!]
 \vspace{2mm}
@@ -287,6 +249,45 @@ if tx.Data != nil && tx.Input != nil
 \end{tabular}
 \caption{Sample of Mutation Rules and Examples for Various Cryptocurrencies that were not killed.}
 \label{tab:rules}
+\end{table*}
+
+% for solana, these are app.codecov.io/gh/solana-labs/solana @a6a4cfd numbers. grcov
+% doesn't include tests, but reports coverage % as a total over lines including
+% tests, so it's also not accurate. we'll just over approximate rather than
+% underapproximate and acknowledge that in the text
+\begin{table*}[ht!]
+\vspace{2mm}
+\centering
+\begin{tabular}{llrccc}
+\toprule
+\bf \mr{2}{Project}             & \bf \mr{2}{File path}                         & \bf \mr{2}{LOC}  & \mc{1}{c}{\bf Mutation} & \mc{1}{c}{\bf File}     & \mc{1}{c}{\bf Project}   \\
+\bf                             & \bf                                           & \bf              & \mc{1}{c}{\bf score}    & \mc{1}{c}{\bf coverage} & \mc{1}{c}{\bf coverage}  \\
+\midrule
+bitcoin                         & src/consensus/tx\_verify.cpp                  & 210              & 78.6\%                  & 98.7\%                  & 84.2\%                   \\
+\cmidrule{2-6}
+\mr{3}{go-ethereum}             & core/block\_validator.go                      & 129              & 70.1\%                  & 81.0\%                  &  \mr{3}{58.8\%}          \\
+                                & signer/fourbyte/validation.go                 & 127              & 49.5\%                  & 60.0\%                  &                          \\
+                                & signer/core/signed\_data.go                   & 1,044            & 25.3\%                  & 69.3\%                  &                          \\
+\cmidrule{2-6}
+\mr{3}{solana}                  & perf/src/sigverify.rs                         & 1,246            & ????\%                  & 74.48\%                 & \mr{3}{82.2\%}           \\
+%                               & core/src/sigverify\_stage.rs                  & 296              & ????\%                  & 88.46\%                 & \mr{3}{82.2\%}           \\  this seems to just call perf/src/sigverify
+                                & core/src/validator.rs                         & 2,016            & -                       & 73.29\%                 &                          \\
+                                & core/src/tvu.rs                               &  494             & -                       & 63.12\%                 &                          \\
+\cmidrule{2-6}
+dogecoin                        & src/bitcoin-tx.cpp                            & 847              & 58.7\%                  & -                       & 70.1\%                   \\
+\cmidrule{2-6}
+avalanchego                     & vms/platformvm/add\_subnet\_validator\_tx.go  & 308              & 57.3\%                  & 81.0\%                  & 63.6\%                   \\
+\cmidrule{2-6}
+  stellar                       & src/historywork/VerifyTxResultsWork.cpp       & 192              & 85.1\%                  & -                       & -                        \\
+\cmidrule{2-6}
+cosmos-sdk                      & x/auth/ante/sigverify.go                      & 510              & 73.1\%                  & 67.0\%                  & 60.9\%                   \\
+\bottomrule
+\end{tabular}
+\caption{Code Coverage and Mutation Scores Across Popular Cryptocurrencies. \underline{Mutation score} represents the proportion of mutants that were killed divided by the total number of mutants (higher is better).
+\underline{File coverage} and \underline{Project coverage} report statement level coverage for the file and entire project, respectively. \underline{LOC} represents the lines of code of the chosen file. Absent entries indicated by \texttt{-} means we could not
+obtain coverage data, or otherwise curbed additional experiments.
+}
+\label{tab:comparison}
 \end{table*}
 
 \begin{figure}
