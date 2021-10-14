@@ -207,7 +207,6 @@ cosmos-sdk                      & x/auth/ante/sigverify.go                      
 \caption{Code Coverage and Mutation Scores Across Popular Cryptocurrencies. \underline{Mutation score} represents the proportion of mutants that were killed divided by the total number of mutants (higher is better).
 \underline{File coverage} and \underline{Project coverage} report statement level coverage for the file and entire project, respectively. \underline{LOC} represents the lines of code of the chosen file. Absent entries indicated by \texttt{-} means we could not
 obtain coverage data, or otherwise curbed additional experiments.
-\rvt{rvt asks: what do we want to say about inception date here, or in the text? i presume there's something interesting to say here since we're including the data...}}
 \label{tab:comparison}
 \end{table*}
 
@@ -300,12 +299,6 @@ no means comprehensive or suggestive of a project's quality and testing as a
 whole).
 
 \subsubsection*{Experimental Setup}
-\rvt{rvt says: a TODO here that answers:
-- what is the range of number of mutants we generated across all projects (min and max)
-- how long did mutant generation take?
-- how many mutation operators (or ``rules'') were used?
-- where they the same or different for each project?
-}
 We ran the universal mutator on the candidate files above, using both the universal rules and
 language specific rules. There were 92 universal rules (transformations that can apply to
 any language) and between 0 and 20 language specific rules, depending on the source language
@@ -320,8 +313,6 @@ of this also varied based on test execution time of project and number of candid
 42 minutes (go-ethereum's validation.go) to 32 hours (dogecoin's bitcoin-tx.cpp).
 
 \subsubsection*{Experimental Results.}
-
-\rvt{rvt says: a TODO to address in this subsection, or elsewhere above as examples of mutation testing: a handful of example mutants and/or mutation operators (either those that were unkilled by the Bitcoin runs, or the ones we did in our altcoin experiments) in the form of a readable table or something like that. i think would be really interesting to the reader. e.g., ``what kinds of mutation operators did we decide on? which kinds of mutants survived?''. even if it's standard stuff, it's probably not something the reader wants to guess about, and really is a ``oh that's interesting'' kind of thing to look at. we have the figures but it's difficult to read and these are really trying to make a different point (See discussion) so a table with mutation operators/rules or examples would be awesome}
 
 Table~\ref{tab:rules} shows some of the common rules that we used and some examples of mutations that survived
 from multiple different cryptocurrency projects. For example, one common mutation operator was commenting out a line
