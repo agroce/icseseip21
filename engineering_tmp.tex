@@ -6,46 +6,50 @@ least optimizations of existing features --- in our context, adding
 new fuzzers or cutting-edge methods such as swarm testing --- is
 usually seen as the most interesting aspect of the work, the reality
 is that developer/tester time is often spent on more mundane,
-frustrating issues.
+frustrating problems --- e.g., working around bugs in test
+infrastructure itself.
 
 For example, in the Bitcoin Core effort, early attempts to apply
 Eclipser and AFL ran into a problem:  at some point both fuzzers would
 essentially stop working and begin producing a vast number of spurious
-crashes.  By spurious crashes, we mean unreproducible crashes: inputs
+crashes.  By spurious crashes, we mean un-reproducible crashes: inputs
 that the fuzzer marks as causing a crash, but which, when executed in
 a non-fuzzing context using the fuzz harness, do not crash.  Spurious
-crashes are not unlike the pheonomenon of \emph{flaky tests} ~\cite{flaky}, one of
+crashes are not unlike the phenomenon of \emph{flaky tests} ~\cite{flaky}, one of
 the banes of automated software testing.  A flaky test is a test that, for the same
 snapshot of test code and code under test, sometimes
 fails and sometimes passes.  In fact, arguably, spurious crashes in
 fuzzing are \emph{flaky tests} where the flakiness is due to an
 environmental dependence: the test fails when run under the fuzzer.
-Flaky tests and spurious crashes consume signficant testing and
+Flaky tests and spurious crashes consume significant testing and
 developer/test engineer resources.  During the very first discussions
 with the Chaincode team, when Chaincode first ran AFL, some spurious
-crashes were produced; these were eventually ignored.  This happens to
+crashes were produced; these were eventually just discarded without
+understanding the root cause.  This happens to
 many spurious crashes, unlike flaky tests which manifest in standing
 regression tests that often have to be either removed or otherwise
-mitigated.  In fuzzing, simpy throwing away spurious crashes without
-understanding them is a more feasible option.
-OSS-Fuzz runs on Bitcoin Core, using AFL, also produced some spurious
+mitigated.  In fuzzing, simply throwing away spurious crashes without
+understanding them is a more feasible option, though one that may hide
+some detected vulnerabilities.
+OSS-Fuzz runs using AFL, also produced some spurious
 crashes.
 
 Unlike most spurious crashes, these were eventually (partly)
 understood.  Because AFL and Eclipser, run more than a few hours,
 inevitably reached as stage where they \emph{only} produced spurious
 crashes (instead of doing any useful fuzzing), the problem had to be
-understood, if these fuzzers were to be useful for serious fuzzing.
+understood, if these fuzzers were to be useful.
 The first author discovered that the AFL and Eclipser problems were,
 strictly speaking, not flaky or spurious at all.  The fuzz harnesses
 all fail if there is insufficient storage space on {\tt tmp} to
 execute the Bitcoin software.  At some point, this happens, even if
 fuzzing begins with a large amount of free storage.  The problem is
-that some (but not all) fuzz executions under AFL and Eclipser fail to
+that some (but not all) fuzz executions under AFL and Eclipser (but
+not under libFuzzer) fail to
 clean up {/tmp/test\_common\_Bitcoin Core}; each run that fails to
 clean up leaves an 18-19 megabyte footprint.  Over the millions of
-executions involved in a few hours of fuzzing, this inevitably fills
-the space.
+executions involved in fuzzing, this inevitably fills
+available space.
 
 This problem was also (probably) causing the original AFL issues seen
 by Chaincode, and (almost certainly, on examination of  the OSS-Fuzz
@@ -63,7 +67,7 @@ indicates that when an input is executed multiple times, it does not
 always take the same path.  The worse the stability, the less useful signal
 AFL is receiving from path coverage during fuzzing.  Bitcoin Core's
 stability hovers around 80\%, possibly as a result of the presence of
-threads in the code.  Even if the threads do not cause nondeterminisic
+threads in the code.  Even if the threads do not cause nondeterministic
 behavior of the Bitcoin Core system, from a functional point of view,
 they may cause path coverage to vary more than AFL ``likes.''  It is
 hard to guess if this has a serious adverse effect on fuzzing
