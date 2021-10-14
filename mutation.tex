@@ -31,14 +31,31 @@ tests, and obviously an extremely critical functionality for the blockchain.
 \begin{sloppypar}
 
 To perform mutation analysis on Bitcoin, we generated mutations for code in the
-{\tt tx\_verify.cpp} file. We then evaluated the ability of fuzzing and testing
-to detect such mutants. Figure~\ref{kills} summarizes our mutation
+{\tt tx\_verify.cpp} file.  Fuzzing covers 96 of 98 lines of code, 8
+of 8 functions, and 74 of 102 branches for this file, guaranteeing
+that mutation testing will not primarily reflect missing coverage.
+Comparing coverage to that for functional testing, the fuzz testing
+has very slightly lower branch coverage, but the numbers are almost
+identical (72.5\% vs. 73\%), and the fuzz testing covers \emph{different} branches than
+the functional testing.  The missing lines are different for
+functional and fuzz testing, as well, in fact.  And, as noted above,
+there can be no doubt that transaction verification is a critical
+Bitcoin function: in fact, arguably, checking transactions for
+correctness is \emph{the raison d'être} of any blockchain, and getting
+transactions that should be invalid past such checks would be an
+obvious potential attacker goal.
+We evaluated the ability of fuzzing and functional testing
+to detect mutants of {\tt tx\_verify.cpp}. Figure~\ref{kills} summarizes our mutation
 analysis of the file.
 
 \begin{figure}
 \vspace{2mm}
 \includegraphics[width=0.9\columnwidth]{kill_pre_valgrind.png}
-\caption{A comparison of mutation kills for {\tt tx\_verify.cpp} when subjected to different testing and fuzzing parameters.}
+\caption{A comparison of mutation kills for {\tt tx\_verify.cpp} when
+  subjected to different testing and fuzzing parameters.  At least 29
+  of the 90 surviving mutants are equivalent, and thus not indicative
+  of testing weaknesses.  * indicates
+  only mutants not killed by other methods were analyzed;}
 \label{kills}
 \end{figure}
 
@@ -83,7 +100,7 @@ libFuzzer exploration based on the full (and large) QA asset corpus for each
 harness, with all sanitizers enabled. The {\tt process\_message\_tx} target was
 able to detect 24 mutants, and the {\tt coins\_view} harness was able to detect
 32 mutants, for a total of 50 mutants. In other words, slightly short of 12\%
-over all the generated mutants. This is not a bad result: fuzzing inherently has
+of all the generated mutants. This is not a bad result: fuzzing inherently has
 trouble detecting subtle, non-crash-inducing, bugs in code, because writing a
 strong specification of correct behavior that covers all the bizarre and
 pointless inputs produced in fuzzing is often impractical, or would require a
@@ -119,7 +136,13 @@ here, but does increase interesting \emph{data value} coverage.  Use
 of the libFuzzer {\tt -use\_value\_profile=1} flag is likely
 instrumental in achieving such good value coverage.  Adding that flag was
 one of the first suggestions in the 80-hour effort, but it turned out
-this was already standard practice in the Bitcoin Core fuzz configuration.
+this was already standard practice in the Bitcoin Core fuzz
+configuration.  Note that the opportunity for either approach to
+generate a zero value here is limited: functional tests only cover the
+mutated line 14 times, and fuzzing 556 times.  In contrast, both cover
+numerous other lines of code more than a million times.  For
+functional tests, the line is the 2nd least-covered line executed in {\tt
+  tx\_verify.cpp}, and it is the 4th least-covered line executed for fuzzing.
 
 
 Manual inspection of the surviving mutants showed that at
@@ -136,10 +159,10 @@ none of the surviving mutants seem to expose serious testing
 problems.  After manual pruning, the mutation score is 85.8\%, and
 some of the remaining 61 mutants are likely also equivalent.  The
 limitations of the fuzzing oracle are clear: fuzzing covers 98\% of
-statements and 72.6\% of branches as we write, but can kill fewer than
+statements and 72.5\% of branches as we write, but can kill fewer than
 12\% of mutants.  The much greater killing power of the functional
-tests obviously does not lie in the marginal 0.7 percentage points and 0.5
-percentage points of statement and branch coverage obtained; it lies
+tests obviously does not lie in the marginal 0.5
+percentage points of  branch coverage it obtains; it lies
 in the ability to reject incorrect executions that do not crash or set
 off a sanitizer alarm.
 
@@ -153,7 +176,10 @@ almost never detect,
 e.g. \url{https://github.com/bitcoin/bitcoin/issues/22450}\footnote{Comments
   on this bug, such as ``Another win for fuzzing, oh wow.'' and
   ``Fuzzer rulez!'' show that the Bitcoin Core team has little doubt
-  about the power of fuzzing.}.  Fuzzing is \emph{not} a replacement
+  about the power of fuzzing.}.  In part this is due to the fact that
+when functional tests and fuzzing have similar coverage, they often
+cover \emph{different} hard-to-reach code, as in the case of {\tt
+  tx\_verify.cpp}.  Fuzzing is \emph{not} a replacement
 for functional/unit tests; and functional/unit tests are not a
 replacement for fuzzing.  In our mutation analysis, consider the two
 mutants detected by {\tt coins\_view} fuzzing alone.  In the
