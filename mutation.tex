@@ -227,9 +227,7 @@ avalanchego                     & vms/platformvm/add\_subnet\_validator\_tx.go  
 \cmidrule{2-6}
   stellar                       & src/historywork/VerifyTxResultsWork.cpp       & 192              & 85.1\%                  & -                       & -                        \\
 \cmidrule{2-6}
-go-algorand                     & ledger/eval.go                                & 1,551            & 99.8\%                  & 86.0\%                  & 52.2\%                   \\
-\cmidrule{2-6}
-cosmos-sdk                      & x/auth/ante/sigverify.go                      & 510              & 73.1\%                  & -                       &  -                       \\
+cosmos-sdk                      & x/auth/ante/sigverify.go                      & 510              & 73.1\%                  & 67.0\%                  & 60.9\%                   \\
 \bottomrule
 \end{tabular}
 \caption{Code Coverage and Mutation Scores Across Popular Cryptocurrencies. \underline{Mutation score} represents the proportion of mutants that were killed divided by the total number of mutants (higher is better).
@@ -307,7 +305,7 @@ if tx.Data != nil && tx.Input != nil
 
 Our Bitcoin work prompted us to perform mutation analysis for other popular cryptocurrencies.
 We generated mutants using the universal mutator for code in Ethereum, Solana,
-Dogecoin, Avalanche, Stellar, Algorand, and Cosmos implementations, a selection from the top 30
+Dogecoin, Avalanche, Stellar, and Cosmos implementations, a selection from the top 30
 cryptocurrencies\footnote{We chose these by market capitalization according to
 \url{https://coinmarketcap.com}.} Our selection is influenced by the
 availability of code coverage, and indicative of the further opportunities for
