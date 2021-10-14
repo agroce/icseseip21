@@ -1,4 +1,4 @@
-\section{How Good is the Bitcoin Core Testing and Fuzzing?}
+\section{Conclusion: How Good is the Bitcoin Core Testing and Fuzzing?}
 
 In a sense this is a fundamentally hard question to answer (software
 engineering research has been trying to understand how to answer this question for
@@ -150,8 +150,8 @@ type alone, the code base obviously
 doesn't meet the NASA/JPL proposal of having an average of two
 assertions per function~\cite{holzmann2006power}.  There are only five assert
 statements in the {\tt src/consensus} directory, which has about 500
-lines of code, suggesting that this ratio is not notably higher in the
-most critical code.
+lines of code, suggesting that the assertion ratio is low even for
+critical code.
 
 One conclusion of the 80 hour effort therefore, is that the most
 effective way to improve fuzzing at present might be not to focus on
@@ -161,4 +161,4 @@ greatest weakness of traditional code coverage is that it focuses too
 much attention on the ``input side'' of testing and too little on the
 oracle side~\cite{barr2014oracle}, which is easier for even dedicated
 testing efforts to neglect in the pursuit of covering every branch and
-path.
+path.  
