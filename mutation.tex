@@ -326,7 +326,7 @@ no means comprehensive or suggestive of a project's quality and testing as a
 whole).
 
 \subsubsection*{Experimental Setup}
-We ran the universal mutator on the candidate files above, using both the universal rules and
+We ran the universal mutator on the candidate files above, using both universal and
 language specific rules. There were 92 universal rules (transformations that can apply to
 any language) and between 0 and 20 language specific rules, depending on the source language
 of the project. One can view these rules 
@@ -336,7 +336,7 @@ Using these rules, we generated mutant candidates. The number of generated mutan
 on the source language and length of the candidate file, ranging from 492 (go-ethereum's block\_validator.go) to 
 8567 (go-ethereum's signed\_data.go) mutants. Following the generation of mutants, the universal mutator
 executed these candidate mutants against each project's test suite, reporting mutation score. The runtime
-of this also varied based on test execution time of project and number of candidate mutants, ranging from
+of this step also varied based on test execution time of project and number of candidate mutants, ranging from
 42 minutes (go-ethereum's validation.go) to 32 hours (dogecoin's bitcoin-tx.cpp).
 
 \subsubsection*{Experimental Results.}
@@ -349,9 +349,9 @@ included adding break and continue to statements, along with changing binary ope
 Table~\ref{tab:comparison} summarizes our results, which lists the
 \textbf{Mutation score}, \textbf{File coverage}, and \textbf{Project coverage}
 over the selected file. \textbf{Mutation score} represents the proportion of
-mutants that were killed by the project's test suite divided by the total number
-of mutants (higher is better). File and project metrics represent statement
-coverage. statement level. In principle, we expect that higher file coverage
+generated mutants that were killed by the project's test suite divided by the total number
+of mutants (higher is better). File and project metrics report statement level coverage
+for each file and the entire project. In principle, we expect that higher file coverage
 (i.e., more tested code) to correlate with a higher mutation score.\rvt{don't
   know if this needs a cite but that seems intuitive, sort of?}
 
