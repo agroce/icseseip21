@@ -1,3 +1,4 @@
+\lstset{style=langstyle}
 \section{Mutation Analysis}
 
 Attempting to improve a fuzzing effort is one way to find problems
@@ -213,19 +214,49 @@ obtain coverage data, or otherwise curbed additional experiments.
 \begin{table*}[ht!]
 \vspace{2mm}
 \centering
-\begin{tabular}{llcc}
+\begin{tabular}{lll}
 \toprule
-\bf Mutation Operator                          & \bf Project and File                  & \bf Old Code                              & \bf New Code              \\
+\bf Mutation Operator                          & \bf Project and File                  & \bf Mutation Example   \\
 \midrule
 Comment out source code line                   & bitcoin - tx\_verify.cpp              & 
-\begin{lstlisting}
+\begin{lstlisting}[language=C2diff]
 if (!MoneyRange(coin.out.nValue) || !MoneyRange(nValueIn)) {
-  return state.Invalid(TxValidationResult::TX\_CONSENSUS, "bad-txns-inputvalues-outofrange");
+-  return state.Invalid(TxValidationResult::TX_CONSENSUS, 
+-     "bad-txns-inputvalues-outofrange");
++  /* return state.Invalid(TxValidationResult::TX_CONSENSUS, 
++     "bad-txns-inputvalues-outofrange"); */
 }    
-\end{lstlisting}                                    &                           \\
-bitcoin                                        &                                       &                                           &                           \\
-bitcoin                                        &                                       &                                           &                           \\
-bitcoin                                        &                                       &                                           &                           \\
+\end{lstlisting}                               \\
+Replace < with ==                              & go-ethereum - block\_validator.go     &
+\begin{lstlisting}[language=Godiff]
+- if desiredLimit < params.MinGasLimit {
++ if desiredLimit == params.MinGasLimit {
+  desiredLimit = params.MinGasLimit
+}  
+\end{lstlisting}                               \\
+Add continue to statement                      & dogecoin - bitcoin-tx.cpp              &
+\begin{lstlisting}[language=C2diff]
+while ((!feof(f)) && (!ferror(f))) {
+  char buf[4096];
++ continue;
+  ...
+}
+\end{lstlisting}                               \\
+Add break to statement                         & bitcoin - tx\_verify.cpp               &
+\begin{lstlisting}[language=C2diff]
+for (const auto& txin : tx.vin) {
++ break;
+  nSigOps += txin.scriptSig.GetSigOpCount(false);
+}
+\end{lstlisting}                              \\
+Flip arguments of function                    & go-ethereum - validation.go             &
+\begin{lstlisting}[language=Godiff]
+if tx.Data != nil && tx.Input != nil 
+-       && !bytes.Equal(*tx.Data, *tx.Input) {
++       && !bytes.Equal(*tx.Input, *tx.Data) {
+  return nil, errors.New(`...`)
+}
+\end{lstlisting}                               \\
 \bottomrule
 \end{tabular}
 \caption{Sample of Mutation Rules and Examples for Various Cryptocurrencies that were not killed.}
@@ -295,7 +326,7 @@ of this also varied based on test execution time of project and number of candid
 Table~\ref{tab:rules} shows some of the common rules that we used and some examples of mutations that survived
 from multiple different cryptocurrency projects. For example, one common mutation operator was commenting out a line
 of source code, with live mutants often corresponding with uncovered lines of source code. Some other operators
-included adding break and continue to statements, along with changing binary operators such as \&\& to ||.
+included adding break and continue to statements, along with changing binary operators such as < to ==.
 
 Table~\ref{tab:comparison} summarizes our results, which lists the
 \textbf{Mutation score}, \textbf{File coverage}, and \textbf{Project coverage}

@@ -30,6 +30,7 @@
 \usepackage{multirow}
 \usepackage{multicol}
 \usepackage{listings}
+\usepackage{xcolor}
 
 %%% The following is specific to Onward! '21 and the paper
 %%% 'Let a Thousand Flowers Bloom: On the Uses of Diversity in Software Testing'
@@ -100,6 +101,68 @@
 \newcommand{\clg}[1]{\textcolor{blue}{#1}}
 \newcommand{\rvt}[1]{\textcolor{purple}{#1}}
 \newcommand{\kj}[1]{\textcolor{olive}{#1}}
+
+\definecolor{dkgreen}{rgb}{0,0.5,0}
+\definecolor{dkred}{rgb}{0.5,0,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{vlgray}{gray}{0.95}
+\definecolor{lgray}{gray}{0.7}
+\definecolor{bluehighlight}{HTML}{46adb7}
+\definecolor{orangehighlight}{HTML}{e3a24d}
+\definecolor{redhighlight}{HTML}{b95e8c}
+
+\newcommand{\lstbg}[3][0pt]{{\fboxsep#1\colorbox{#2}{\strut #3}}}
+
+\lstdefinelanguage{Golang}%
+  {morekeywords=[1]{package,import,func,type,struct,return,defer,panic,%
+     recover,select,var,const,iota,},%
+   morekeywords=[2]{string,uint,uint8,uint16,uint32,uint64,int,int8,int16,%
+     int32,int64,bool,float32,float64,complex64,complex128,byte,rune,uintptr,%
+     error,interface},%
+   morekeywords=[3]{map,slice,make,new,nil,len,cap,copy,close,true,false,%
+     delete,append,real,imag,complex,chan,},%
+   morekeywords=[4]{for,break,continue,range,go,goto,switch,case,fallthrough,if,%
+     else,default,},%
+   morekeywords=[5]{Println,Printf,Error,Print,},%
+   sensitive=true,%
+   morecomment=[l]{//},%
+   morecomment=[s]{/*}{*/},%
+   morestring=[b]',%
+   morestring=[b]",%
+   morestring=[s]{`}{`},%
+   }
+
+\lstdefinelanguage{Godiff}{%
+  language     = Golang,
+  morecomment=[f][\lstbg{red!20}]-,
+  morecomment=[f][\lstbg{green!20}]+,
+}
+
+\lstdefinelanguage{C2diff}{%
+  language     = C,
+  morecomment=[f][\lstbg{red!20}]-,
+  morecomment=[f][\lstbg{green!20}]+,
+}
+
+\lstdefinestyle{langstyle}{
+  basicstyle=\ttfamily\bfseries\scriptsize,
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkred},
+  stringstyle=\color{dkgreen},
+  keepspaces=true,              % very important to preserve space after ' in footnote
+  breaklines=true,
+  otherkeywords={::=},
+  numberstyle=\ttfamily\footnotesize\color{gray},
+  stepnumber=1,
+  numbersep=8pt,
+  backgroundcolor=\color{white},
+  tabsize=4,
+  showspaces=false,
+  showstringspaces=false,
+  xleftmargin=.18in,
+  captionpos=b,
+  escapeinside={(?}{?)},
+}
 
 %%
 %% The abstract is a short summary of the work to be presented in the
