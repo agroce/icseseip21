@@ -253,7 +253,7 @@ if (!MoneyRange(coin.out.nValue) || !MoneyRange(nValueIn)) {
 +     "bad-txns-inputvalues-outofrange"); */
 }
 \end{lstlisting}                               \\
-Replace < with ==                              & go-ethereum - block\_validator.go     &
+Replace \texttt{<} with \texttt{==}                              & go-ethereum - block\_validator.go     &
 \begin{lstlisting}[language=Godiff]
 - if desiredLimit < params.MinGasLimit {
 + if desiredLimit == params.MinGasLimit {
@@ -348,7 +348,7 @@ of this step also varied based on test execution time of project and number of c
 Table~\ref{tab:rules} shows some of the common rules that we used and some examples of mutations that survived
 from multiple different cryptocurrency projects. For example, one common mutation operator was commenting out a line
 of source code, with live mutants often corresponding with uncovered lines of source code. Some other operators
-included adding {\tt break} and {\tt continue} to statements, along with changing binary operators such as < to ==.
+included adding {\tt break} and {\tt continue} to statements, along with changing binary operators such as \texttt{<} to \texttt{==}.
 
 Table~\ref{tab:comparison} summarizes our results, and lists the
 \textbf{Mutation score}, \textbf{File coverage}, and \textbf{Project coverage}. \textbf{Mutation score} represents the proportion of
@@ -361,13 +361,13 @@ score.
 The Bitcoin Core mutation score (we chose the score before manual
 pruning of equivalent mutants, since we did not perform that pruning
 for other projects) ranks high: 3rd out of 10 projects. Our experience
-working with Bitcoin Core developers shows that they are pro-active about code
+working with Bitcoin Core developers shows that they are proactive about code
 quality and testing, which is likely to influence (whether directly or
 indirectly) mutation scores.  At the same time, code
 for transaction verification and validation may naturally vary depending on
 context, code organization, and language, as reflected by the differences in
 lines of code in our selection (and unknown function dependencies or testing in
-the rest of the code-base). Thus, our mutation testing
+the rest of the codebase). Thus, our mutation testing
 ultimately is best understood as a set of individual data points that are difficult to compare
 horizontally across projects.
 % Previous text:
