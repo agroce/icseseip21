@@ -391,14 +391,15 @@ similar to Bitcoin, it may be indicative of approximate
 mutation scores over the kinds of tests considered.  At minimum, we observe that
 Bitcoin is likely in the upper quartile of cryptocurrencies in terms of test
 quality as measured by coverage and mutation score.
-% Other projects should
-% certainly ensure that the totality of their test efforts (which typically go
-% beyond what we evaluate here), are of sufficient quality.
+\iffalse
+% doesn't flow for me, so commenting this out
+Other projects should
+certainly ensure that the totality of their test efforts (which typically go
+beyond what we evaluate here), are of sufficient quality.
+\fi
 In any event, our investigation suggests there is clearly
 room to improve functional test coverage (and mutation score) across popular
 cryptocurrencies.
-\clg{Alex or Rijnard can haggle out what this last sentence should say, if you
-  don't like what my sentence said; I'm trying to thread the needle.}
 
 Perhaps a more important lesson from this qualitative comparison is that
 mutation testing is an important way to evaluate test suite quality, especially
@@ -408,15 +409,12 @@ cryptocurrencies, targeted at least at central logic (like transaction
 validation). It also \emph{should} be reasonably feasible, in principle; we
 found the problem tractable, once we isolated key functionality and a test
 suite. However, our experience suggests key areas that make it difficult to
-conduct such evaluations comprehensively: (1) identifying critical blockhain
+conduct such evaluations comprehensively: (1) identifying critical blockchain
 functionality and evaluating associated test coverage
-(2) understanding why there are gaps in coverage exist (is it a lack of
+(2) understanding why gaps in coverage exist (is it a lack of
 tests, or does other kind of testing take place (e.g., integration testing)
-that doesn't visibly reveal coverage? Moreover, projects
- It was difficult even to obtain code coverage data for
-those projects that do not report it via continuous integration.
-\clg{Pithy summary/call to arms? I'd love for Rijnard to give it a shot,
-  honestly, I think he has a better vision here.} Said shortly, with
+where coverage is not recorded?
+Said shortly, with
 cryptocurrency projects seeking to unabashedly upend the status quo of financial
 systems, it seems only reasonable that they embrace very high standards of testing;
 in this context, our
