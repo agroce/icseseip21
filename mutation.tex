@@ -218,11 +218,11 @@ bitcoin                         & src/consensus/tx\_verify.cpp                  
                                 & signer/fourbyte/validation.go                 & 127              & 49.5\%                  & 60.0\%                  &                          \\
                                 & signer/core/signed\_data.go                   & 1,044            & 25.3\%                  & 69.3\%                  &                          \\
 \cmidrule{2-6}
-\mr{3}{solana}                  & perf/src/sigverify.rs                         & 1,246            & ????\%                  & 74.48\%                 & \mr{3}{82.2\%}           \\
+%\mr{3}{solana}                  & perf/src/sigverify.rs                         & 1,246            & ????\%                  & 74.48\%                 & \mr{3}{82.2\%}           \\
 %                               & core/src/sigverify\_stage.rs                  & 296              & ????\%                  & 88.46\%                 & \mr{3}{82.2\%}           \\  this seems to just call perf/src/sigverify
-                                & core/src/validator.rs                         & 2,016            & -                       & 73.29\%                 &                          \\
-                                & core/src/tvu.rs                               &  494             & -                       & 63.12\%                 &                          \\
-\cmidrule{2-6}
+%                                & core/src/validator.rs                         & 2,016            & -                       & 73.29\%                 &                          \\
+%                                & core/src/tvu.rs                               &  494             & -                       & 63.12\%                 &                          \\
+%\cmidrule{2-6}
 dogecoin                        & src/bitcoin-tx.cpp                            & 847              & 58.7\%                  & -                       & 70.1\%                   \\
 \cmidrule{2-6}
 avalanchego                     & vms/platformvm/add\_subnet\_validator\_tx.go  & 308              & 57.3\%                  & 81.0\%                  & 63.6\%                   \\
@@ -308,7 +308,7 @@ if tx.Data != nil && tx.Input != nil
 
 To put our work on Bitcoin in context, we performed mutation analysis
 of transaction-verification-related code for other popular cryptocurrencies.
-We generated mutants using the universal mutator for code in Ethereum, Solana,
+We generated mutants using the universal mutator for code in Ethereum,
 Dogecoin, Avalanche, Stellar, and Cosmos implementations, a selection from the top 30
 cryptocurrencies\footnote{We chose these by market capitalization according to
 \url{https://coinmarketcap.com}.} Our selection was also influenced by the
@@ -365,7 +365,7 @@ that many of the generated mutants removed lines related to error checking
 Figures \ref{fig:mutation} and \ref{fig:coverage}).
 
 The Bitcoin Core mutation score (without pruning or fuzzer-killed
-mutants) ranks high: 2nd out of 7 projects. Bitcoin Core
+mutants) ranks high: 2nd out of 6 projects. Bitcoin Core
 also has the highest File and Project coverage of any project.  Our experience
 working with Bitcoin Core developers suggests that they are pro-active about code
 quality and testing, which is likely to lead (directly or
