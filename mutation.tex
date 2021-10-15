@@ -223,7 +223,7 @@ bitcoin                         & src/consensus/tx\_verify.cpp                  
 %                                & core/src/validator.rs                         & 2,016            & -                       & 73.29\%                 &                          \\
 %                                & core/src/tvu.rs                               &  494             & -                       & 63.12\%                 &                          \\
 %\cmidrule{2-6}
-dogecoin                        & src/bitcoin-tx.cpp                            & 847              & 58.7\%                  & -                       & 70.1\%                   \\
+dogecoin                        & src/bitcoin-tx.cpp                            & 847              & 58.7\%                  & -$^\dagger$               & 70.1\%                   \\
 \cmidrule{2-6}
 avalanchego                     & vms/platformvm/add\_subnet\_validator\_tx.go  & 308              & 57.3\%                  & 81.0\%                  & 63.6\%                   \\
 \cmidrule{2-6}
@@ -233,8 +233,7 @@ cosmos-sdk                      & x/auth/ante/sigverify.go                      
 \bottomrule
 \end{tabular}
 \caption{Code Coverage and Mutation Scores Across Popular Cryptocurrencies. \underline{Mutation score} represents the proportion of mutants that were killed divided by the total number of mutants (higher is better).
-\underline{File coverage} and \underline{Project coverage} report statement level coverage for the file and entire project, respectively. \underline{LOC} represents the lines of code of the chosen file. Absent entries indicated by \texttt{-} means we could not
-obtain coverage data, or otherwise curbed additional experiments.
+\underline{File coverage} and \underline{Project coverage} report statement level coverage for the file and entire project, respectively. \underline{LOC} represents the lines of code of the chosen file. $^\dagger$We were unable to obtain coverage for this file.
 }
 \label{tab:comparison}
 \end{table*}
