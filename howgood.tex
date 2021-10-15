@@ -145,12 +145,11 @@ statements, scattered among  ~180KLOC of C and C++.  The resulting ratio
 of about one assertion per 100 lines of code is not terrible, but is
 at the lower limit of what many consider to be an acceptable assertion
 ratio for critical code.
-Given that Bitcoin Core has more than 1,800 functions with {\tt void}
-type alone, the code base obviously
+Given that Bitcoin Core defines far more than 5,000 functions, the code obviously
 doesn't meet the NASA/JPL proposal of having an average of two
 assertions per function~\cite{holzmann2006power}.  There are only five assert
 statements in the {\tt src/consensus} directory, which has about 500
-lines of code, suggesting that the assertion ratio is low even for
+lines of code and defines more than 10 functions, suggesting that the assertion ratio is low even for
 critical code.
 
 One conclusion of the 80 hour effort therefore, is that the most
