@@ -90,7 +90,7 @@ The universal mutator generated 430 compiling mutants of the file in
 less than three hours.\footnote{Building all test and fuzz targets for each
 candidate mutant takes some time, and parallelizing the task would
 require multiple sandboxed copies of the code. Constructing a more
-focused build command than {\tt make -j5}, that avoids building most tests, might speed this up substantially.}
+focused build command might speed this up substantially.}.
 Two fuzz targets seemed to be relevant to fuzzing {\tt
   tx\_verify.cpp} code: {\tt process\_message\_tx} and {\tt coins\_view}.
 In theory {\tt process\_message} and {\tt process\_messages} were
@@ -126,9 +126,7 @@ question, then, is how many mutants that survive Bitcoin Core's
 extensive functional tests survive fuzzing.
 
 The answer is: not too many.  The functional tests without sanitizers
-enabled catch an additional 278 mutants.  Turning on sanitizers (which
-is very expensive --- we \emph{only} ran it for mutants surviving all other
-tests, as indicated by the zero overlap and the asterisk in Figure~\ref{kills}) catches an additional 12 mutants.  Only 90 of the
+enabled catch an additional 278 mutants.  Turning on sanitizers catches an additional 12 mutants.  Only 90 of the
 430 compiling mutants survive all tests, for an overall mutation score
 of 79.07\%.
 
@@ -350,10 +348,21 @@ generated mutants that were killed by the project's test suite divided by the to
 of mutants (higher is better). File and project metrics report statement level coverage
 for each chosen file and the entire project. In principle, we expect that higher file coverage
 (i.e., more tested code) should correlate with a higher mutation
-score. At the same time, our investigation reveals
+score. Our investigation reveals
  interesting challenges in the interplay of test code, code-under-test, and reported coverage.
-One illustrative project (not included in our table) is Solana,\footnote{\url{https://github.com/solana-labs/solana}, a top 10 cryptocurrency at the time of writing. } a codebase predominantly written in Rust. The project reports high test coverage overall (82\%) and in specific files (\texttt{sigverify.rs}) with seemingly important signature verification code (74\%).\footnote{\href{https://app.codecov.io/gh/solana-labs/solana/commit/f28f6365a14b8cf3e0599c3164dd7988777e96b4/perf/src/sigverify.rs}{https://app.codecov.io/gh/solana-labs/solana}} When we attempted mutation testing this file, we realized that both test code and code-under-test live in the same file, and further, that reported code coverage includes test code. With inline tests, we face a dual challenge of restricting mutations to only tested code (a problem best
-addressed by the mutation tool) and obtaining coverage restricted only to tested code (best solved by the coverage tool). These concerns naturally bear on both mutation score and code coverage, and our experience reveals the need to tease such concerns apart to accurately assess test quality in practice.
+One illustrative project (not included in our table) is
+Solana,\footnote{\url{https://github.com/solana-labs/solana}, a top 10
+  cryptocurrency at the time of writing. } a codebase predominantly
+written in Rust. The project reports high test coverage overall (82\%)
+and in specific files (\texttt{sigverify.rs}) with seemingly important
+signature verification code
+(74\%).\footnote{\href{https://app.codecov.io/gh/solana-labs/solana/commit/f28f6365a14b8cf3e0599c3164dd7988777e96b4/perf/src/sigverify.rs}{https://app.codecov.io/gh/solana-labs/solana}}
+When we applied mutation testing ti this file, we realized that both test code and code-under-test live in the same file, and further, that reported code coverage includes test code. With inline tests, we face a dual challenge of restricting mutations to only tested code (a problem best
+addressed by the mutation tool) and obtaining coverage restricted only
+to tested code (best solved by the coverage tool). These concerns
+naturally bear on both mutation score and code coverage, and our
+experience reveals the need to tease such concerns apart to accurately
+assess true test quality.
 
 For illustration, Table~\ref{tab:rules} shows some of the mutation rules
 with examples of surviving mutants. One commonly used operator,
@@ -380,10 +389,6 @@ ultimately is best understood as a set of individual data points that are
 difficult to compare fully quantitatively across projects.  We discuss these
 considerations in more detail next.
 
-% RVT says: there may be a chance that the switch case statements are not covered for other reasons (disabled tests, bad coverage tool). Likely these are untested, but I think it's fine to just state our observations.
-%
-% The lack of coverage of these exceptional cases across ethereum and many other low coverage files we examined, % was something that surprised us, as we expected these files to have high coverage
-% and test both happy and exceptional paths.
 
 \subsubsection*{Discussion.}
 For the alternative cryptocurrencies, we limited our attention to the default
@@ -395,12 +400,6 @@ similar to Bitcoin, it may be indicative of approximate
 mutation scores over the kinds of tests considered.  At minimum, we observe that
 Bitcoin is likely in the upper quartile of cryptocurrencies in terms of test
 quality as measured by coverage and mutation score.
-\iffalse
-% doesn't flow for me, so commenting this out
-Other projects should
-certainly ensure that the totality of their test efforts (which typically go
-beyond what we evaluate here), are of sufficient quality.
-\fi
 In any event, our investigation suggests there is clearly
 room to improve test coverage (and mutation score) across popular
 cryptocurrencies.
