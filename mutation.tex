@@ -61,7 +61,7 @@ analysis of the file.
 
 \begin{figure*}
 \raggedright
-
+{\scriptsize
 {\bf Original mutated code (and immediate context):}
 
 \begin{code}
@@ -81,6 +81,7 @@ strprintf("tried to spend coinbase at depth \%d", nSpendHeight / coin.nHeight));
 \begin{code}
 strprintf("tried to spend coinbase at depth \%d", nSpendHeight \% coin.nHeight));
 \end{code}
+}
 \caption{Mutants detected \emph{only} by fuzzing.}
 \label{mkills}
 \end{figure*}
@@ -305,22 +306,23 @@ if tx.Data != nil && tx.Input != nil
 \label{fig:coverage}
 \end{figure}
 
-To put our work on Bitcoin in context, we perform mutation analysis for other popular cryptocurrencies.
+To put our work on Bitcoin in context, we performed mutation analysis
+of transaction-verification-related code for other popular cryptocurrencies.
 We generated mutants using the universal mutator for code in Ethereum, Solana,
 Dogecoin, Avalanche, Stellar, and Cosmos implementations, a selection from the top 30
 cryptocurrencies\footnote{We chose these by market capitalization according to
-\url{https://coinmarketcap.com}.} Our selection is influenced by the
-availability of code coverage, and indicative of the further opportunities for
-mutation testing in Bitcoin and popular altcoins, rather than a
+\url{https://coinmarketcap.com}.} Our selection was also influenced by the
+availability of code coverage, and indicative of the opportunities for
+mutation testing of Bitcoin and popular altcoins, rather than a
 comprehensive survey. Because it requires significant effort to set up or
 otherwise understand the extent of fuzz testing in this heterogeneous selection
-of projects, our mutation analysis here only considers pure mutation testing
-against the project test suite itself (not fuzzing).  Our basic
-purpose was to put the Bitcoin Core coverage and mutation results in
-some kind of context.
+of projects, our mutation analysis here only considers mutation testing
+against the project test suite, not fuzzing.  As discussed above,
+without heroic effort, fuzzing is likely to add only modest additional
+mutant kills.
 
-For the same reasons above, we targeted transaction verification/validation logic and
-identified candidate files by searching for keywords like \texttt{transaction},
+We identified candidate files that might be roughly comparable to
+Bitcoin's {\tt tx\_verify.cpp} by searching for keywords like \texttt{transaction},
 \texttt{verify}, \texttt{sign}, and \texttt{validate}. We manually inspected
 functions and test coverage for these functions (where applicable) to identify
 which files would be interesting targets for mutation. Ultimately we
@@ -337,7 +339,7 @@ Across all projects, our rules generated between 492 and 8,567 mutants per file.
 % RVT says: think just the range is good enough, keeping the actual files in comments because it's good to know for ourselves.
 % 492 (go-ethereum's {\tt block\_validator.go}) to
 % 8567 (go-ethereum's {\tt signed\_data.go}) mutants.
-We executed mutant files against each project's default test suite (determined by consulting READMEs and build documentation) using universal mutator to obtain a final mutation score. The runtime
+We ran mutants against each project's default test suite (determined by consulting READMEs and build/CI documentation) using universal mutator to obtain a final mutation score. The runtime
 of this step naturally varies depending on test suite execution speed and candidates per file, ranging from
 42 minutes (go-ethereum's {\tt validation.go}) to 32 hours (dogecoin's
 {\tt bitcoin-tx.cpp}).
@@ -352,8 +354,9 @@ for each chosen file and the entire project. In principle, we expect that higher
 score.
 
 For illustration, Table~\ref{tab:rules} shows some of the mutation rules
-with examples of surviving mutants. One commonly used operator comments out a
-line of source code; live mutants thus typically corresponding to uncovered lines.
+with examples of surviving mutants. One commonly used operator,
+statement deletion, comments out a
+line of source code.
 Other operators included adding {\tt break} and {\tt continue} to statements,
 along with changing binary operators such as \texttt{<} to \texttt{==}.
 Investigating files with lower coverage (e.g., those in Ethereum), we noticed
@@ -361,12 +364,11 @@ that many of the generated mutants removed lines related to error checking
 (e.g., in switch statements) that were apparently not covered by tests (cf.
 Figures \ref{fig:mutation} and \ref{fig:coverage}).
 
-The Bitcoin Core mutation score (we use the score before manual
-pruning of equivalent mutants, since we did not perform pruning
-for other projects) ranks high: 2nd out of 10 projects. Bitcoin Core
+The Bitcoin Core mutation score (without pruning or fuzzer-killed
+mutants) ranks high: 2nd out of 7 projects. Bitcoin Core
 also has the highest File and Project coverage of any project.  Our experience
 working with Bitcoin Core developers suggests that they are pro-active about code
-quality and testing, which is likely to related (whether directly or
+quality and testing, which is likely to lead (directly or
 indirectly) to test suite quality.
 At the same time, code
 for transaction verification and validation may naturally vary depending on
@@ -398,7 +400,7 @@ certainly ensure that the totality of their test efforts (which typically go
 beyond what we evaluate here), are of sufficient quality.
 \fi
 In any event, our investigation suggests there is clearly
-room to improve functional test coverage (and mutation score) across popular
+room to improve test coverage (and mutation score) across popular
 cryptocurrencies.
 
 Perhaps a more important lesson from this qualitative comparison is that
@@ -412,10 +414,11 @@ suite. However, our experience suggests key areas that make it difficult to
 conduct such evaluations comprehensively: (1) identifying critical blockchain
 functionality and evaluating associated test coverage
 (2) understanding why gaps in coverage exist (is it a lack of
-tests, or does other kind of testing take place (e.g., integration testing)
-where coverage is not recorded?
-Said shortly, with
-cryptocurrency projects seeking to unabashedly upend the status quo of financial
+tests, or does some other kind of testing take place (e.g., integration testing)
+where coverage is not recorded?  Even for Bitcoin Core's relatively
+well-documented tests, the first author initially thought the weak unit
+tests. not the extensive functional tests, were the primary tests for the code.
+In brief: with cryptocurrency projects seeking to unabashedly upend the status quo of financial
 systems, it seems only reasonable that they embrace very high standards of testing;
 in this context, our
 % experience supports
