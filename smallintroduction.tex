@@ -61,11 +61,7 @@ the functional testing.
 \begin{figure}
 \vspace{2mm}
 \includegraphics[width=0.9\columnwidth]{kill_pre_valgrind.png}
-\caption{A comparison of mutation kills for {\tt tx\_verify.cpp} when
-  subjected to different testing and fuzzing parameters.  At least 29
-  of the 90 surviving mutants are equivalent, and thus not indicative
-  of testing weaknesses.  * indicates
-  only mutants not killed by other methods were analyzed;}
+\caption{Mutation kills for {\tt tx\_verify.cpp}}
 \label{kills}
 \end{figure}
 
@@ -90,20 +86,27 @@ The Universal Mutator generated 430 mutants. The {\tt process\_message\_tx} fuzz
 able to detect 24 mutants, and the {\tt coins\_view} harness was able to detect
 32 mutants, for a total of 50 mutants (since some mutants were
 detected by both). Fuzzing could detect just under 12\%
-of all the generated mutants.   Fuzzing adds only two unique mutant kills beyond those produced by
-functional testing, which has a much higher mutation score.  This raises the question:  why fuzz?  The coverage for high quality
-(if imperfect) functional tests such as those for Bitcoin Core will
-often be considerably
-higher, and the oracle will almost always be \emph{much} more powerful.  The answer lies in the
-fact that, even in the presence of such high quality tests, fuzzing
+of mutants.   Fuzzing adds only two unique mutant kills beyond those produced by
+functional testing, which has a much higher score.  This raises the question:  why fuzz?  
+The answer lies in the fact that, even in the presence of such high quality tests, fuzzing
 uncovers subtle bugs that functional tests designed by humans will
-almost never detect,
-e.g. \url{https://github.com/bitcoin/bitcoin/issues/22450}.
+almost never detect, e.g. \url{https://github.com/bitcoin/bitcoin/issues/22450}.
 
 To put our work on Bitcoin in context, we performed mutation analysis
-of transaction-verification-related code for other popular cryptocurrencies, and Bitcoin ranked high: 2nd out of 6 projects. Bitcoin Core
+of transaction-verification-related code for other cryptocurrencies, and Bitcoin ranked high: 2nd out of 6 projects. Bitcoin Core
 also had the highest File and Project coverage of any project.  
 
+Our conclusion, based on the negligible gap between code coverage for fuzzing and functional tests, and the huge difference in mutation scores, and the lack of new bugs found even when we ran novel fuzzers, is that the best way for Bitcoin to gain fuzzing power might be to improve the oracle power in fuzzing by adding more invariants and sanity checks.  The Bitcoin Core code has about 1,800 {\tt assert}
+statements, scattered among  ~180KLOC of C and C++.  The resulting ratio
+of about one assertion per 100 lines of code is not terrible, but is
+at the lower limit of what many consider to be an acceptable assertion
+ratio for critical code.
+Given that Bitcoin Core defines at least 4,000 functions, the code obviously
+doesn't meet the NASA/JPL proposal of having an average of two
+assertions per function~\cite{holzmann2006power}.  There are only five assert
+statements in the {\tt src/consensus} directory, which has about 500
+lines of code and defines more than 10 functions, suggesting that the assertion ratio is low even for very
+critical code.
 
 \section{Full Report}
 
