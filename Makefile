@@ -1,6 +1,6 @@
 # Set this to the basename of the .tex file
 # This will also be the name of the generated .dvi, .ps and .pdf files
-PAPER = main
+PAPER = twopager
 
 .PHONY: $(PAPER).pdf all clean
 
