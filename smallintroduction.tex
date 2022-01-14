@@ -13,9 +13,7 @@ The underlying reason for saturation is that any fuzzer (or other test generator
 
 \section{Results}
 
-One thing that quickly emerged from discussions before the primary 80 hour effort began was the limited extent of the fuzzer runs being performed.  The fuzzing includes a large number of targets, each with its own fuzz harness and executable.  At the time, the basic strategy was to run libFuzzer on each of these for 100,000 iterations.  Because some targets are very fast and a few, such as full message processing, are slow, this meant in practice fuzzing most targets for only 30-90 seconds, and even the slowest targets for only a little over an hour.  The total time for over 100 targets was not negligible, but expecting such short runs for each target, after an initial exploration of the easy part of the probability space, to gain coverage or bugs very often, was simply unrealistic.  In particular, for complex, critical targets such as transaction verification and end-to-end message processing, 100,000 iterations was completely insufficient.  
-
-The first suggestion for escaping coverage, therefore was very simple:  run the fuzzer longer!  The Chaincode team immediately tried increasing their configuration to 5 million iterations, multiplying the number of executions, and runtime, by a factor of 50.  Based on initial success with a few targets, this was done for all targets, and eventually became the new default.  By May 20th, Bitcoin Core was also in OSS-Fuzz: \url{https://github.com/google/oss-fuzz/tree/master/projects/bitcoin-core}.  From then on, Bitcoin Core has essentially been continuously fuzzed, and OSS-Fuzz quickly produced new crashes to investigate, and continues to do so:  \url{https://bugs.chromium.org/p/oss-fuzz/issues/list?q=bitcoin}.
+One thing that quickly emerged from discussions before the primary 80 hour effort began was the limited extent of the fuzzer runs being performed.  The fuzzing includes a large number of targets, each with its own fuzz harness and executable.  At the time, the basic strategy was to run libFuzzer on each of these for 100,000 iterations.  Because some targets are very fast and a few, such as full message processing, are slow, this meant in practice fuzzing most targets for only 30-90 seconds, and even the slowest targets for only a little over an hour.  The total time for over 100 targets was not negligible, but expecting such short runs for each target, after an initial exploration of the easy part of the probability space, to gain coverage or bugs very often, was simply unrealistic.  For complex targets such as transaction verification and end-to-end message processing, 100,000 iterations was highly insufficient.   The first suggestion for escaping saturation, therefore was very simple:  run the fuzzer longer!  The Chaincode tried increasing their configuration to 5 million iterations, multiplying the number of executions by a factor of 50.  Based on initial success with a few targets, this was done for all targets, and became the new default.  By May 20th, Bitcoin Core was also in OSS-Fuzz: \url{https://github.com/google/oss-fuzz/tree/master/projects/bitcoin-core}.  From then on, Bitcoin Core has essentially been continuously fuzzed, and OSS-Fuzz quickly produced new crashes to investigate, and continues to do so:  \url{https://bugs.chromium.org/p/oss-fuzz/issues/list?q=bitcoin}.
 
 Additonal efforts to improve the fuzzing focused on adding support for the Eclipser fuzzer~\cite{Eclipser}, and attempting to use swarm testing~\cite{ISSTA12} to produce more unusual message sequence interactions.  Using Eclipser produced a large number of additional corpus seeds for OSS-Fuzz (over 2,000 inputs, the third largest contribution to the set to date), while swarm turned out to be ineffective, due to extensive manual cross-seeding providing similar benefits.  Neither approach, however, turned up any new bugs.  It was clear the code coverage from fuzzing was extremely high for most critical components of the code, and improvements were in some sense marginal (new paths or data values only).
 
@@ -38,19 +36,10 @@ kernel's RCU module, and in the process discovered some subtle kernel bugs~\cite
 
 \begin{sloppypar}
 We used the Universal Mutator
-\noindent(\url{https://github.com/agroce/universalmutator})~\cite{regexpMut}, a
-mutation tool already used widely in the blockchain and smart contract world, to
-mutate the Bitcoin Core transaction
-verification code, and, subsequently, that of other popular cryptocurrencies. We focused on transaction verification/validation code, as it is generally well-covered by
-tests, and obviously critical functionality.
-\end{sloppypar}
-
-%\subsection{Mutation Testing Bitcoin}
-
-\begin{sloppypar}
-
-To perform mutation analysis on Bitcoin, we generated mutations for code in the
-{\tt tx\_verify.cpp} file.  Fuzzing covers 96 of 98 lines of code, 8
+\noindent(\url{https://github.com/agroce/universalmutator})~\cite{regexpMut} to
+mutate transaction
+verification code  in the
+{\tt tx\_verify.cpp} file; this is clearly extremely critical functionality.  Fuzzing covers 96 of 98 lines of code, 8
 of 8 functions, and 74 of 102 branches for this file, guaranteeing
 that mutation testing will not primarily reflect missing coverage.
 Comparing coverage to that for functional testing, the fuzz testing
@@ -60,7 +49,7 @@ the functional testing.
 
 \begin{figure}
 \vspace{2mm}
-\includegraphics[width=0.9\columnwidth]{kill_pre_valgrind.png}
+\includegraphics[width=0.8\columnwidth]{kill_pre_valgrind.png}
 \caption{Mutation kills for {\tt tx\_verify.cpp}}
 \label{kills}
 \end{figure}
