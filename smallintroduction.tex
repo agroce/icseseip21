@@ -21,6 +21,88 @@ Additonal efforts to improve the fuzzing focused on adding support for the Eclip
 
 \section{Mutation Analysis and Oracle Strength}
 
+\lstset{style=langstyle}
+%\section{Mutation Analysis}
+
+Attempting to improve a fuzzing effort is one way to find problems
+with the effort; if you succeed, you found a weakness.  However, none
+of the attempts exposed a serious problem.  An alternative is
+to directly look for holes in testing.  The Bitcoin Core fuzzing team
+clearly was measuring and inspecting code coverage (see \url{https://marcofalke.github.io/btc_cov/}), so little value
+would be added by inspecting traditional coverage alone.  Mutation
+testing/analysis~\cite{MutationSurvey}, however, subsumes code coverage and adds extremely
+valuable information on \emph{oracle power} in addition to mere
+coverage~\cite{Discontents}.    In previous work, we had
+used mutation testing to improve the random testing of the Linux
+kernel's RCU module, and in the process discovered some subtle kernel bugs~\cite{mutKernel,groce2018verified}.
+
+\begin{sloppypar}
+We used the Universal Mutator
+\noindent(\url{https://github.com/agroce/universalmutator})~\cite{regexpMut}, a
+mutation tool already used widely in the blockchain and smart contract world, to
+mutate the Bitcoin Core transaction
+verification code, and, subsequently, that of other popular cryptocurrencies. We focused on transaction verification/validation code, as it is generally well-covered by
+tests, and obviously critical functionality.
+\end{sloppypar}
+
+%\subsection{Mutation Testing Bitcoin}
+
+\begin{sloppypar}
+
+To perform mutation analysis on Bitcoin, we generated mutations for code in the
+{\tt tx\_verify.cpp} file.  Fuzzing covers 96 of 98 lines of code, 8
+of 8 functions, and 74 of 102 branches for this file, guaranteeing
+that mutation testing will not primarily reflect missing coverage.
+Comparing coverage to that for functional testing, the fuzz testing
+has very slightly lower branch coverage, but the numbers are almost
+identical (72.5\% vs. 73\%), and the fuzz testing covers \emph{different} branches than
+the functional testing.  
+
+\begin{figure}
+\vspace{2mm}
+\includegraphics[width=0.9\columnwidth]{kill_pre_valgrind.png}
+\caption{A comparison of mutation kills for {\tt tx\_verify.cpp} when
+  subjected to different testing and fuzzing parameters.  At least 29
+  of the 90 surviving mutants are equivalent, and thus not indicative
+  of testing weaknesses.  * indicates
+  only mutants not killed by other methods were analyzed;}
+\label{kills}
+\end{figure}
+
+
+%{\bf Mutant \#379} changes the {\tt strprintf} to:
+
+%\begin{code}
+%strprintf("tried to spend coinbase at depth \%d", nSpendHeight / coin.nHeight));
+%\end{code}
+
+%{\bf Mutant \#380} changes the {\tt strprintf} to:
+
+%\begin{code}
+%strprintf("tried to spend coinbase at depth \%d", nSpendHeight \% coin.nHeight));
+%\end{code}
+%}
+%\caption{Mutants detected \emph{only} by fuzzing.}
+%\label{mkills}
+%\end{figure*}
+
+The Universal Mutator generated 430 mutants. The {\tt process\_message\_tx} fuzz target was
+able to detect 24 mutants, and the {\tt coins\_view} harness was able to detect
+32 mutants, for a total of 50 mutants (since some mutants were
+detected by both). Fuzzing could detect just under 12\%
+of all the generated mutants.   Fuzzing adds only two unique mutant kills beyond those produced by
+functional testing, which has a much higher mutation score.  This raises the question:  why fuzz?  The coverage for high quality
+(if imperfect) functional tests such as those for Bitcoin Core will
+often be considerably
+higher, and the oracle will almost always be \emph{much} more powerful.  The answer lies in the
+fact that, even in the presence of such high quality tests, fuzzing
+uncovers subtle bugs that functional tests designed by humans will
+almost never detect,
+e.g. \url{https://github.com/bitcoin/bitcoin/issues/22450}.
+
+To put our work on Bitcoin in context, we performed mutation analysis
+of transaction-verification-related code for other popular cryptocurrencies, and Bitcoin ranked high: 2nd out of 6 projects. Bitcoin Core
+also had the highest File and Project coverage of any project.  
 
 
 \section{Full Report}
