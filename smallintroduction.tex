@@ -15,7 +15,7 @@ The underlying reason for saturation is that any fuzzer (or other test generator
 
 One thing that quickly emerged from discussions before the primary 80 hour effort began was the limited extent of the fuzzer runs being performed.  The fuzzing includes a large number of targets, each with its own fuzz harness and executable.  At the time, the basic strategy was to run libFuzzer on each of these for 100,000 iterations.  Because some targets are very fast and a few, such as full message processing, are slow, this meant in practice fuzzing most targets for only 30-90 seconds, and even the slowest targets for only a little over an hour.  The total time for over 100 targets was not negligible, but expecting such short runs for each target, after an initial exploration of the easy part of the probability space, to gain coverage or bugs very often, was simply unrealistic.  For complex targets such as transaction verification and end-to-end message processing, 100,000 iterations was highly insufficient.   The first suggestion for escaping saturation, therefore was very simple:  run the fuzzer longer!  The Chaincode tried increasing their configuration to 5 million iterations, multiplying the number of executions by a factor of 50.  Based on initial success with a few targets, this was done for all targets, and became the new default.  By May 20th, Bitcoin Core was also in OSS-Fuzz: \url{https://github.com/google/oss-fuzz/tree/master/projects/bitcoin-core}.  From then on, Bitcoin Core has essentially been continuously fuzzed, and OSS-Fuzz quickly produced new crashes to investigate, and continues to do so:  \url{https://bugs.chromium.org/p/oss-fuzz/issues/list?q=bitcoin}.
 
-Additonal efforts to improve the fuzzing focused on adding support for the Eclipser fuzzer~\cite{Eclipser}, and attempting to use swarm testing~\cite{ISSTA12} to produce more unusual message sequence interactions.  Using Eclipser produced a large number of additional corpus seeds for OSS-Fuzz (over 2,000 inputs, the third largest contribution to the set to date), while swarm turned out to be ineffective, due to extensive manual cross-seeding providing similar benefits.  Neither approach, however, turned up any new bugs.  It was clear the code coverage from fuzzing was extremely high for most critical components of the code, and improvements were in some sense marginal (new paths or data values only).
+Additonal efforts to improve the fuzzing focused on adding support for the Eclipser fuzzer~\cite{Eclipser}, and attempting to use swarm testing~\cite{ISSTA12} to produce more unusual message sequence interactions.  Using Eclipser produced a large number of additional corpus seeds for OSS-Fuzz (over 2,000 inputs, the third largest contribution to the set to date), while swarm turned out to be ineffective, due to extensive manual cross-seeding providing similar benefits.  Neither approach, however, turned up any new bugs and improvements were in some sense marginal (new paths or data values only).
 
 \section{Mutation Analysis}
 
@@ -48,7 +48,7 @@ identical (72.5\% vs. 73\%), and the fuzz testing covers \emph{different} branch
 
 \begin{figure}
 \vspace{2mm}
-\includegraphics[width=0.7\columnwidth]{kill_pre_valgrind.png}
+\includegraphics[width=0.6\columnwidth]{kill_pre_valgrind.png}
 \caption{Mutation kills for {\tt tx\_verify.cpp}}
 \label{kills}
 \end{figure}
