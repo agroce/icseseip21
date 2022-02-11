@@ -1,5 +1,9 @@
 \section{Introduction}
 
+\begin{sloppypar}
+  \emph{Note: this paper is an extended version of the two page version presented at Software Engineering in Practice, ICSE 2022 (\url{https://conf.researchr.org/track/icse-2022/icse-2022-seip---software-engineering-in-practice}).}
+\end{sloppypar}
+
 Bitcoin~\cite{nakamoto2008bitcoin} is the most popular cryptocurrency, and one of the most visible (if controversial) ``new'' systems based on software to rise to prominence in the last decade.  As we write, while volatile, Bitcoin consistently has a market cap of over half a trillion dollars since January of 2021.  Due to its distributed, decentralized nature, Bitcoin in some sense is the sum of the operations of the code executed by many independent Bitcoin nodes, especially nodes that mine cryptocurrency.  Bitcoin Core (\url{https://github.com/Bitcoin/Bitcoin}) is by far the most popular implementation, and serves as a reference for all other implementations.  To a significant degree, the code of Bitcoin Core \emph{is} Bitcoin.  The main Bitcoin Core repo on GitHub has over 57,000 stars, and has been forked more than 30,000 times.
 
 Because of its fame and the high monetary value of Bitcoins, the Bitcoin protocol and its implementations are a high-value target for hackers (or even nation states interested in controlling cryptocurrency developments).  Therefore, testing the code is of paramount importance, including extensive functional tests and aggressive \emph{fuzzing}.  This paper describes a focused effort to identify weaknesses in, and improve, the fuzzing of Bitcoin Core.

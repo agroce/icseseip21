@@ -47,11 +47,12 @@ functional tests with generally good code coverage.
 \subsection{The Bitcoin Core Fuzzing Infrastructure}
 
 \begin{figure}
-  {\scriptsize
+  {
   \begin{code}
-    FUZZ\_TARGET(parse\_script)
+FUZZ\_TARGET(parse\_script)
 \{
-    const std::string script\_string(buffer.begin(), buffer.end());
+    const std::string script\_string(buffer.begin(),
+       buffer.end());
     try {
         (void)ParseScript(script\_string);
     } catch (const std::runtime\_error\&) {
